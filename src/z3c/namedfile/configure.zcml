@@ -1,0 +1,19 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="z3c.namedfile">
+
+<!--
+  <browser:page
+      name="download"
+      for="*"
+      class=".browser.Download"
+      permission="zope.View"
+      />
+-->
+
+  <include zcml:condition="installed z3c.blobfile" file="z3c-blobfile.zcml" />
+<!--   <include zcml:condition="installed plone.scale" file="scaling.zcml" /> -->
+
+</configure>
