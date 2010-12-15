@@ -43,3 +43,19 @@ if HAVE_BLOBS:
 
     class IBlobby(Interface):
         """Marker interface for objects that support blobs."""
+
+
+    class INamedBlobFile(INamedFile, IBlobby, IBlobFile):
+        """A BLOB file with a filename."""
+
+
+    class INamedBlobImage(INamedImage, IBlobby, IBlobImage):
+        """A BLOB image with a filename."""
+
+
+    class INamedBlobFileField(INamedFileField):
+        """Field for storing INamedBlobFile objects."""
+
+
+    class INamedBlobImageField(INamedImageField):
+        """Field for storing INamedBlobImage objects."""

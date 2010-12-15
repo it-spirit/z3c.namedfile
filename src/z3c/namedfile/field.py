@@ -11,7 +11,10 @@ from z3c.namedfile.interfaces import (HAVE_BLOBS, INamedFile, INamedFileField,
     INamedImage, INamedImageField)
 
 if HAVE_BLOBS:
-    pass
+    from z3c.namedfile.file import NamedBlobFile as BlobFileValueType
+    from z3c.namedfile.file import NamedBlobImage as BlobImageValueType
+    from z3c.namedfile.interfaces import (INamedBlobFile, INamedBlobFileField,
+        INamedBlobImage, INamedBlobImageField)
 
 
 class NamedFile(Object):
@@ -38,3 +41,31 @@ class NamedImage(Object):
         if 'schema' in kw:
             self.schema = kw.pop('schema')
         super(NamedImage, self).__init__(schema=self.schema, **kw)
+
+
+if HAVE_BLOBS:
+
+    class NamedBlobFile(object):
+        """A NamedBlobFile field."""
+        implements(INamedBlobFileField)
+
+        _type = BlobFileValueType
+        schema = INamedBlobFile
+
+        def __init__(self, **kw):
+            if 'schema' in kw:
+                self.schema = kw.pop('schema')
+            super(NamedBlobFile, self).__init__(schema=self.schema, **kw)
+
+
+    class NamedBlobImage(object):
+        """A NamedBlobImage field."""
+        implements(INamedBlobImageField)
+
+        _type = BlobImageValueType
+        schema = INamedBlobImage
+
+        def __init__(self, **kw):
+            if 'schema' in kw:
+                self.schema = kw.pop('schema')
+            super(NamedBlobImage, self).__init__(schema=self.schema, **kw)

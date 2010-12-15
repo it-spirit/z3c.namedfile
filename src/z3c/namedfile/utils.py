@@ -11,6 +11,17 @@ if HAVE_BLOBS:
     from z3c.namedfile.interfaces import IBlobby
 
 
+def safe_basename(filename):
+    """Get the basename of the given filename.
+
+    Regardless of which platform (Windows or Unix) it originated from.
+    """
+    return filename[max(filename.rfind('/'),
+                        filename.rfind('\\'),
+                        filename.rfind(':'),
+                        )+1:]
+
+
 def get_contenttype(file=None, filename=None,
                     default='application/octet-stream'):
     """Get the MIME content type of the given file and/or filename."""

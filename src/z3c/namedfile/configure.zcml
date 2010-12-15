@@ -2,7 +2,67 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:zcml="http://namespaces.zope.org/zcml"
     xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
     i18n_domain="z3c.namedfile">
+
+  <i18n:registerTranslations directory="locales" />
+
+  <include package=".browser" />
+
+
+  <!-- setting up content types -->
+
+  <interface
+      interface=".interfaces.INamedFile"
+      type="zope.app.content.interfaces.IContentType"
+      />
+
+  <interface
+      interface=".interfaces.IImage"
+      type="zope.app.content.interfaces.IContentType"
+      />
+
+
+  <!-- content classes -->
+
+  <class class=".file.NamedFile">
+    <require
+        permission="zope.View"
+        interface=".interfaces.INamedFile"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.INamedFile"
+        />
+
+    <implements
+       interface="zope.annotation.interfaces.IAttributeAnnotatable"
+       />
+  </class>
+
+
+  <class class=".file.NamedImage">
+    <require
+        permission="zope.View"
+        interface=".interfaces.INamedImage"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.INamedImage"
+        />
+
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+  </class>
+
+  <adapter
+      factory="zope.app.file.image.ImageSized"
+      provides="zope.size.interfaces.ISized"
+      for=".interfaces.INamedImage"
+      />
 
 <!--
   <browser:page
