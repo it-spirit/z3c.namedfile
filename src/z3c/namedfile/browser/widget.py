@@ -8,21 +8,22 @@ except ImportError:
 import urllib
 
 # zope imports
-from z3c.form import form
 from z3c.form.browser import file
 from z3c.form.interfaces import IDataManager, IFieldWidget, IFormLayer, NOVALUE
 from z3c.form.widget import FieldWidget
 from zope.component import adapter, getMultiAdapter
-from zope.interface import implementer, implementsOnly
-from zope.publisher.browser import FileUpload
+from zope.interface import implementer, implements, implementsOnly
+from zope.publisher.browser import BrowserView, FileUpload
+from zope.publisher.interfaces import IPublishTraverse, NotFound
 from zope.security.proxy import removeSecurityProxy
 from zope.security._proxy import _Proxy as Proxy
+from zope.traversing.browser import absoluteURL
 
 # local imports
 from z3c.namedfile.browser.interfaces import INamedFileWidget, INamedImageWidget
 from z3c.namedfile.file import NamedFile
 from z3c.namedfile.interfaces import INamed, INamedFileField, INamedImage, INamedImageField
-from z3c.namedfile.utils import safe_basename
+from z3c.namedfile.utils import safe_basename, set_headers, stream_data
 
 
 class NamedFileWidget(file.FileWidget):
@@ -99,11 +100,11 @@ class NamedFileWidget(file.FileWidget):
             if self.ignoreContext:
                 return default
             dm = getMultiAdapter((self.context, self.field), IDataManager)
-            value = dm.get()
+            value = dm.query()
+            # TODO: Do we realy have to remove the security proxy?
             if isinstance(value, Proxy):
                 value = removeSecurityProxy(value)
             return value
-            # return dm.get()
 
         # empty unnamed FileUploads should not count as a value
         value = super(NamedFileWidget, self).extract(default)
@@ -115,6 +116,9 @@ class NamedFileWidget(file.FileWidget):
                 return default
             value.seek(0)
         return value
+
+    def absolute_url(self):
+        return absoluteURL(self.context, self.request)
 
 
 class NamedImageWidget(NamedFileWidget):
@@ -158,8 +162,35 @@ class NamedImageWidget(NamedFileWidget):
         return self.title
 
 
-class Download(form.DisplayForm):
+class Download(BrowserView):
+    implements(IPublishTraverse)
+
+    def __init__(self, context, request):
+        context = removeSecurityProxy(context)
+        super(Download, self).__init__(context, request)
+        self.filename = None
+
+    def publishTraverse(self, request, name):
+        if self.filename is None: # ../@@download/filename
+            self.filename = name
+        else:
+            raise NotFound(self, name, request)
+        return self
+
     def __call__(self):
+        if self.context.ignoreContext:
+            raise NotFound("Cannot get the data file from a widget with no context")
+
+        context = self.context.context
+        field = self.context.field
+        dm = getMultiAdapter((context, field,), IDataManager)
+        file_ = dm.query()
+        if file_ is None:
+            raise NotFound(self, self.filename, self.request)
+        if not self.filename:
+            self.filename = getattr(file_, 'filename', None)
+        set_headers(file_, self.request.response, filename=self.filename)
+        return stream_data(file_)
         return u"<h1>IMAGE</h1>"
 
 

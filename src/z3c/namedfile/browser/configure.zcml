@@ -31,6 +31,13 @@
   <adapter factory=".widget.NamedFileFieldWidget" />
   <adapter factory=".widget.NamedImageFieldWidget" />
 
+  <adapter
+      for="* zope.publisher.interfaces.http.IHTTPRequest"
+      provides="zope.traversing.interfaces.ITraversable"
+      factory=".traversal.WidgetTraversable"
+      name="widget"
+      />
+
 
   <z3c:widgetTemplate
       mode="display"
@@ -58,6 +65,13 @@
       widget=".interfaces.INamedImageWidget"
       layer="z3c.form.interfaces.IFormLayer"
       template="image_input.pt"
+      />
+
+  <browser:page
+      name="download"
+      for="*"
+      class=".views.Download"
+      permission="zope.View"
       />
 
   <browser:page
