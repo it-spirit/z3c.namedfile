@@ -191,7 +191,6 @@ class Download(BrowserView):
             self.filename = getattr(file_, 'filename', None)
         set_headers(file_, self.request.response, filename=self.filename)
         return stream_data(file_)
-        return u"<h1>IMAGE</h1>"
 
 
 @implementer(IFieldWidget)

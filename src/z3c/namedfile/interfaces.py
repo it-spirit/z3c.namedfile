@@ -13,6 +13,15 @@ except ImportError:
     HAVE_BLOBS = False
 
 
+class IImageScaleTraversable(Interface):
+    """Marker for items that should provide access to image scales for named
+    image fields via the @@images view."""
+
+
+class IAvailableSizes(Interface):
+    """A callable returning a dictionary of scale name => (width, height)."""
+
+
 class INamed(Interface):
     """An item with a filename."""
 

@@ -81,4 +81,24 @@
       permission="zope.View"
       />
 
+  <browser:page
+      name="images"
+      for="..interfaces.IImageScaleTraversable"
+      class=".scaling.ImageScaling"
+      allowed_attributes="scale"
+      permission="zope.View"
+      />
+
+  <browser:page
+      name="index_html"
+      for=".scaling.ImageScale"
+      class=".views.ScalingView"
+      permission="zope.View"
+      />
+
+  <browser:defaultView
+      for=".scaling.ImageScale"
+      name="index_html"
+      />
+
 </configure>

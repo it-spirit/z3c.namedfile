@@ -8,7 +8,7 @@
   <i18n:registerTranslations directory="locales" />
 
   <include package=".browser" />
-
+  <include package="zope.annotation" />
 
   <!-- setting up content types -->
 

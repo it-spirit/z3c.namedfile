@@ -4,6 +4,7 @@
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces import IPublishTraverse, NotFound
+from zope.security.proxy import removeSecurityProxy
 
 # local imports
 from z3c.namedfile.utils import set_headers, stream_data
@@ -50,3 +51,12 @@ class Download(BrowserView):
         set_headers(file, self.request.response, filename=self.filename)
 
         return stream_data(file)
+
+
+class ScalingView(BrowserView):
+    def __call__(self):
+        data = removeSecurityProxy(self.context)
+        fieldname = getattr(data, 'fieldname', getattr(self, 'fieldname', None))
+        
+        set_headers(data.data, self.request.response, filename=data.data.filename)
+        return stream_data(data.data)
