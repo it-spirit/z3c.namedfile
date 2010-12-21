@@ -49,24 +49,12 @@ class INamedImageWidget(INamedFileWidget):
         title=u"Image height.",
     )
 
-    thumb_width = schema.Int(
-        min=0,
-        required=False,
-        title=u"Thumbnail image width.",
-    )
-
-    thumb_height = schema.Int(
-        min=0,
-        required=False,
-        title=u"Thumbnail image height.",
-    )
-
     alt = schema.TextLine(
         required=False,
         title=u"Image alternative text.",
     )
 
-    tag = schema.Dict(
+    preview_url = schema.URI(
         required=False,
-        title=u"Image tag",
+        title=u"Image preview URL.",
     )

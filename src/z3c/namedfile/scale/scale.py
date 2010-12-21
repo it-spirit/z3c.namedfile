@@ -2,8 +2,12 @@
 
 # python imports
 from cStringIO import StringIO
+from logging import exception
 import PIL.Image
 import PIL.ImageFile
+
+# zope imports
+from ZODB.POSException import ConflictError
 
 
 # Set a larger buffer size. This fixes problems with jpeg decoding.
@@ -141,3 +145,41 @@ def scalePILImage(image, width=None, height=None, direction='down'):
             image = image.crop((left, 0, right, height))
 
     return image
+
+
+def createScale(context, fieldname, direction='thumbnail', **parameters):
+    """Factory for the image scales, see `IImageScaleStorage.scale`."""
+    orig_value = getattr(context, fieldname)
+
+    if hasattr(orig_value, 'open'):
+        orig_data = orig_value.open()
+    else:
+        orig_data = getattr(orig_value, 'data', orig_value)
+
+    if not orig_data:
+        return
+
+    try:
+        result = scaleImage(orig_data, direction=direction, **parameters)
+    except (ConflictError, KeyboardInterrupt):
+        raise
+    except Exception:
+        exception('Could not scale "%r".', orig_value)
+        return
+
+    if result is not None:
+        data, format, dimensions = result
+        mimetype = 'image/%s' % format.lower()
+        value = orig_value.__class__(data, contentType=mimetype,
+            filename=orig_value.filename)
+        value.fieldname = fieldname
+        return value, format, dimensions
+
+
+def getAvailableSizes():
+    return {
+        'thumb': (128, 128),
+        'mini': (200, 200),
+        'preview': (400, 400),
+        'large': (768, 768),
+    }

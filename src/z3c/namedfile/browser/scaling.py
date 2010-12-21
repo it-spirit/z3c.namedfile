@@ -16,7 +16,7 @@ from zope.traversing.interfaces import ITraversable, TraversalError
 # local imports
 from z3c.namedfile.interfaces import IAvailableSizes
 from z3c.namedfile.scale.storage import AnnotationStorage
-from z3c.namedfile.scale.scale import scaleImage
+from z3c.namedfile.scale.scale import createScale, getAvailableSizes
 from z3c.namedfile.utils import set_headers, stream_data
 
 
@@ -86,6 +86,15 @@ class ImageScale(BrowserView):
         return self
 
 
+
+
+
+
+
+
+
+
+
 class ImageScaling(BrowserView):
     """View used for generating (and storing) image scales."""
     implements(ITraversable, IPublishTraverse)
@@ -123,63 +132,22 @@ class ImageScaling(BrowserView):
         # return self
         raise NotFound(self, name, self.request)
 
-    def traverse(self, name, furtherPath):
-        """Used for path traversal, i.e. in zope page templates."""
-        value = self.guarded_orig_image(name)
-        if not furtherPath:
-            image = ImageScale(self.context, self.request, data=value,
-                fieldname=name)
-        else:
-            image = self.scale(name, furtherPath.pop())
-
-        if image is not None:
-            return image.tag()
-
-        raise TraversalError(self, name)
-
-    _sizes = {}
-    @apply
-    def available_sizes():
-        def get(self):
-            return {
-                'thumb': (128, 128),
-                'preview': (400, 400),
-            }
-        def set(self, value):
-            self._sizes = value
-        return property(get, set)
-
-    def guarded_orig_image(self, fieldname):
-        return getattr(self.context, fieldname)
-
-    def create(self, fieldname, direction='thumbnail', **parameters):
-        """Factory for the image scales, see `IImageScaleStorage.scale`."""
-        orig_value = removeSecurityProxy(getattr(self.context, fieldname))
-
-        if hasattr(orig_value, 'open'):
-            orig_data = orig_value.open()
-        else:
-            orig_data = getattr(orig_value, 'data', orig_value)
-
-        if not orig_data:
-            return
-
-        try:
-            result = scaleImage(orig_data, direction=direction, **parameters)
-        except (ConflictError, KeyboardInterrupt):
-            raise
-        except Exception:
-            exception('Could not scale "%r" or "%r".', orig_value,
-                absoluteURL(self.context, self.request))
-            return
-
-        if result is not None:
-            data, format, dimensions = result
-            mimetype = 'image/%s' % format.lower()
-            value = orig_value.__class__(data, contentType=mimetype,
-                filename=orig_value.filename)
-            value.fieldname = fieldname
-            return value, format, dimensions
+#     def traverse(self, name, furtherPath):
+#         """Used for path traversal, i.e. in zope page templates."""
+#         value = self.guarded_orig_image(name)
+#         if not furtherPath:
+#             image = ImageScale(self.context, self.request, data=value,
+#                 fieldname=name)
+#         else:
+#             image = self.scale(name, furtherPath.pop())
+# 
+#         if image is not None:
+#             return image.tag()
+# 
+#         raise TraversalError(self, name)
+# 
+#     def guarded_orig_image(self, fieldname):
+#         return getattr(self.context, fieldname)
 
     def modified(self):
         """Provide a callable to return the modification time of content items.
@@ -191,14 +159,14 @@ class ImageScaling(BrowserView):
 
     def scale(self, fieldname=None, scale=None, **parameters):
         if scale is not None:
-            available = self.available_sizes
+            available = getAvailableSizes()
             if not scale in available:
                 return None
             width, height = available[scale]
             parameters.update(width=width, height=height)
 
         storage = AnnotationStorage(self.context, self.modified)
-        info = storage.scale(factory=self.create, fieldname=fieldname,
+        info = storage.scale(factory=createScale, fieldname=fieldname,
             **parameters)
 
         if info is not None:

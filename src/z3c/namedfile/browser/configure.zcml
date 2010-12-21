@@ -82,12 +82,28 @@
       />
 
   <browser:page
+      name="scaling"
+      for="*"
+      class=".scaling.ImageScaling"
+      permission="zope.View"
+      />
+
+  <browser:page
+      name="scaling"
+      for=".interfaces.INamedImageWidget"
+      class=".widget.Scaling"
+      permission="zope.View"
+      />
+
+<!--
+  <browser:page
       name="images"
       for="..interfaces.IImageScaleTraversable"
       class=".scaling.ImageScaling"
       allowed_attributes="scale"
       permission="zope.View"
       />
+-->
 
   <browser:page
       name="index_html"

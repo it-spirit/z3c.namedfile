@@ -34,9 +34,10 @@
                    filename_encoded view/filename_encoded;
                    width view/width;
                    height view/height;
-                   alt view/alt"
+                   alt view/alt;
+                   preview view/preview_url"
        tal:condition="python:exists and fieldname"
-       tal:attributes="src string:${view/absolute_url}/@@images/${fieldname}/thumb;
+       tal:attributes="src preview;
                        alt view/alt" />
 
   <span tal:condition="not:exists" class="discreet" i18n:translate="no_image">No image</span>

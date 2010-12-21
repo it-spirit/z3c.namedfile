@@ -100,7 +100,7 @@ class AnnotationStorage(DictMixin):
             info = None
 
         if info is None and factory:
-            result = factory(**parameters)
+            result = factory(removeSecurityProxy(self.context), **parameters)
             if result is not None:
                 data, format, dimensions = result
                 width, height = dimensions
