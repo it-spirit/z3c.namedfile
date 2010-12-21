@@ -65,3 +65,8 @@ class INamedImageWidget(INamedFileWidget):
         required=False,
         title=u"Image alternative text.",
     )
+
+    tag = schema.Dict(
+        required=False,
+        title=u"Image tag",
+    )

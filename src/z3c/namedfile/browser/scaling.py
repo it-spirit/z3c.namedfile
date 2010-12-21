@@ -45,10 +45,10 @@ class ImageScale(BrowserView):
     def tag(self, height=None, width=None, alt=None, css_class=None,
         title=None, **kwargs):
         """Create a tag including scale."""
-        if heigth is None:
-            heigth = getattr(self, 'height', self.data._height)
+        if height is None:
+            height = getattr(self, 'height', self.data.getImageSize()[1])
         if width is None:
-            width = getattr(self, 'width', self.data._width)
+            width = getattr(self, 'width', self.data.getImageSize()[0])
 
         if alt is None:
             alt = u""

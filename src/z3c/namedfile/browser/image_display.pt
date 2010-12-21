@@ -21,11 +21,23 @@
                    filename_encoded view/filename_encoded;
                    width view/width;
                    height view/height;
-                   alt view/alt"
+                   alt view/alt;"
+       tal:replace="nothing"
        tal:condition="python:exists and fieldname"
        tal:attributes="src string:${view/absolute_url}/@@download/${fieldname}/${filename_encoded};
                        height view/height;
                        width view/width;
                        alt view/alt" />
+
+  <img tal:define="fieldname view/field/__name__ | nothing;
+                   filename view/filename;
+                   filename_encoded view/filename_encoded;
+                   width view/width;
+                   height view/height;
+                   alt view/alt"
+       tal:condition="python:exists and fieldname"
+       tal:attributes="src string:${view/absolute_url}/@@images/${fieldname}/thumb;
+                       alt view/alt" />
+
   <span tal:condition="not:exists" class="discreet" i18n:translate="no_image">No image</span>
 </span>

@@ -21,6 +21,7 @@ from zope.traversing.browser import absoluteURL
 
 # local imports
 from z3c.namedfile.browser.interfaces import INamedFileWidget, INamedImageWidget
+from z3c.namedfile.browser.scaling import ImageScale
 from z3c.namedfile.file import NamedFile
 from z3c.namedfile.interfaces import INamed, INamedFileField, INamedImage, INamedImageField
 from z3c.namedfile.utils import safe_basename, set_headers, stream_data
@@ -160,6 +161,15 @@ class NamedImageWidget(NamedFileWidget):
     @property
     def alt(self):
         return self.title
+
+    @property
+    def tag(self):
+        import ipdb; ipdb.set_trace()
+        name = self.field.getName()
+        scale = ImageScale(self.context, self.request, data=self.value,
+            fieldname=name)
+        tag = scale.tag()
+        return tag
 
 
 class Download(BrowserView):

@@ -22,12 +22,12 @@
                       onselect view/onselect;"
       tal:define="download_url view/download_url;
                   filename view/filename;
+                  fieldname view/field/__name__ | nothing;
                   exists python: view.value is not None;
                   action view/action;
                   allow_nochange view/allow_nochange;">
   <span tal:condition="python:exists and download_url and action=='nochange'">
-    <img tal:attributes="src download_url;
-                         width view/thumb_width" /><br />
+    <img tal:attributes="src string:${view/absolute_url}/@@images/${fieldname}/thumb" /><br />
     <a tal:content="filename"
        tal:attributes="href download_url">Filename</a>
     <span class="discreet"> &mdash;
