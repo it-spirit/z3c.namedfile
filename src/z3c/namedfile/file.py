@@ -50,7 +50,7 @@ if HAVE_BLOBS:
             if filename is not None and contentType in \
                 ('', 'application/octet-stream'):
                 contentType = get_contenttype(filename=filename)
-            super(NamedBlobFile, self).__init__(data, contenttype)
+            super(NamedBlobFile, self).__init__(data, contentType)
             self.filename = filename
 
 

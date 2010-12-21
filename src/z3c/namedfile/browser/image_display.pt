@@ -27,7 +27,7 @@
        tal:attributes="src string:${view/absolute_url}/@@download/${fieldname}/${filename_encoded};
                        height view/height;
                        width view/width;
-                       alt view/alt" />
+                       alt view/alt;" />
 
   <img tal:define="fieldname view/field/__name__ | nothing;
                    filename view/filename;

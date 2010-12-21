@@ -34,10 +34,10 @@ class ImageScale(BrowserView):
 
         if 'uid' in info:
             self.__name__ = '%s.%s' % (info['uid'], extension)
-            self.url = '%s/@@images/%s' % (url, self.__name__)
+            self.url = '%s/@@scaling/%s' % (url, self.__name__)
         else:
             self.__name__ = info['fieldname']
-            self.url = '%s/@@images/%s' % (url, info['fieldname'])
+            self.url = '%s/@@scaling/%s' % (url, info['fieldname'])
 
     def absolute_url(self):
         return self.url

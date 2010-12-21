@@ -164,6 +164,30 @@ class NamedImageWidget(NamedFileWidget):
     def alt(self):
         return self.title
 
+    def modified(self):
+        """Provide a callable to return the modification time of content items.
+
+        So stored image scales can be invalidated.
+        """
+        dc = IZopeDublinCore(self.context)
+        return dc.ModificationDate()
+
+    def tag(self, scale='preview', height=None, width=None):
+        storage = AnnotationStorage(self.context, self.modified)
+        direction = 'down'
+
+        if height is None and width is None:
+            available = getAvailableSizes()
+            if not scale in available:
+                return None
+            width, height = available[scale]
+            direction = 'thumbnail'
+
+        info = storage.scale(factory=createScale,
+            fieldname=self.field.getName(), height=height, width=width, direction=direction)
+        if info is not None:
+            return ImageScale(self.context, self.request, **info).tag()
+
 
 class Download(BrowserView):
     implements(IPublishTraverse)
@@ -235,20 +259,6 @@ class Scaling(BrowserView):
 
         set_headers(image_, self.request.response, filename=image_.filename)
         return stream_data(image_)
-
-#     _sizes = {}
-#     @apply
-#     def available_sizes():
-#         def get(self):
-#             return {
-#                 'thumb': (128, 128),
-#                 'mini': (200, 200),
-#                 'preview': (400, 400),
-#                 'large': (768, 768),
-#             }
-#         def set(self, value):
-#             self._sizes = value
-#         return property(get, set)
 
     def modified(self):
         """Provide a callable to return the modification time of content items.

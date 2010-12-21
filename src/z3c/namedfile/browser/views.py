@@ -59,6 +59,6 @@ class ScalingView(BrowserView):
     def __call__(self):
         data = removeSecurityProxy(self.context)
         fieldname = getattr(data, 'fieldname', getattr(self, 'fieldname', None))
-        
+
         set_headers(data.data, self.request.response, filename=data.data.filename)
         return stream_data(data.data)

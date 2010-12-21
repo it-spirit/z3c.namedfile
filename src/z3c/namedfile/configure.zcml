@@ -10,8 +10,9 @@
   <include package=".browser" />
   <include package="zope.annotation" />
 
-  <!-- setting up content types -->
 
+  <!-- Setting up content types. -->
+  <!-- ========================= -->
   <interface
       interface=".interfaces.INamedFile"
       type="zope.app.content.interfaces.IContentType"
@@ -23,8 +24,8 @@
       />
 
 
-  <!-- content classes -->
-
+  <!-- Content classes. -->
+  <!-- ================ -->
   <class class=".file.NamedFile">
     <require
         permission="zope.View"
@@ -40,7 +41,6 @@
        interface="zope.annotation.interfaces.IAttributeAnnotatable"
        />
   </class>
-
 
   <class class=".file.NamedImage">
     <require
@@ -58,13 +58,48 @@
         />
   </class>
 
+
+  <!-- BLOB support. -->
+  <!-- ============= -->
+  <class class=".file.NamedBlobFile">
+    <require
+        permission="zope.View"
+        interface=".interfaces.INamedBlobFile"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.INamedBlobFile"
+        />
+
+    <implements
+       interface="zope.annotation.interfaces.IAttributeAnnotatable"
+       />
+  </class>
+
+  <class class=".file.NamedBlobImage">
+    <require
+        permission="zope.View"
+        interface=".interfaces.INamedBlobImage"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.INamedBlobImage"
+        />
+
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+  </class>
+
+
+  <!-- Image adapter. -->
+  <!-- ============== -->
   <adapter
       factory="zope.app.file.image.ImageSized"
       provides="zope.size.interfaces.ISized"
       for=".interfaces.INamedImage"
       />
-
-  <include zcml:condition="installed z3c.blobfile" file="z3c-blobfile.zcml" />
-<!--   <include zcml:condition="installed plone.scale" file="scaling.zcml" /> -->
 
 </configure>

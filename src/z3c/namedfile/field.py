@@ -45,7 +45,7 @@ class NamedImage(Object):
 
 if HAVE_BLOBS:
 
-    class NamedBlobFile(object):
+    class NamedBlobFile(Object):
         """A NamedBlobFile field."""
         implements(INamedBlobFileField)
 
@@ -58,7 +58,7 @@ if HAVE_BLOBS:
             super(NamedBlobFile, self).__init__(schema=self.schema, **kw)
 
 
-    class NamedBlobImage(object):
+    class NamedBlobImage(Object):
         """A NamedBlobImage field."""
         implements(INamedBlobImageField)
 
