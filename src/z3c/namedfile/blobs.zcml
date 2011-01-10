@@ -1,0 +1,39 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="z3c.namedfile">
+
+  <!-- BLOB support. -->
+  <!-- ============= -->
+  <class class=".file.NamedBlobFile">
+    <require
+        permission="zope.View"
+        interface=".interfaces.INamedBlobFile"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.INamedBlobFile"
+        />
+
+    <implements
+       interface="zope.annotation.interfaces.IAttributeAnnotatable"
+       />
+  </class>
+
+  <class class=".file.NamedBlobImage">
+    <require
+        permission="zope.View"
+        interface=".interfaces.INamedBlobImage"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.INamedBlobImage"
+        />
+
+    <implements
+        interface="zope.annotation.interfaces.IAttributeAnnotatable"
+        />
+  </class>
+
+</configure>
