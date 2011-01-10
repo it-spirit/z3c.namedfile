@@ -88,10 +88,10 @@ def scalePILImage(image, width=None, height=None, direction='down'):
 
     current_size = image.size
 
-    if (width is not None and width > current_size[0]) or \
-       (height is not None and height > current_size[1]):
-        # We don't scale up
-        return image
+#     if (width is not None and width > current_size[0]) and \
+#        (height is not None and height > current_size[1]):
+#         # We don't scale up
+#         return image
 
     # Determine scale factor needed to get the right height
     if height is None:

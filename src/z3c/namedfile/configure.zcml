@@ -59,41 +59,6 @@
   </class>
 
 
-  <!-- BLOB support. -->
-  <!-- ============= -->
-  <class class=".file.NamedBlobFile">
-    <require
-        permission="zope.View"
-        interface=".interfaces.INamedBlobFile"
-        />
-
-    <require
-        permission="zope.ManageContent"
-        set_schema=".interfaces.INamedBlobFile"
-        />
-
-    <implements
-       interface="zope.annotation.interfaces.IAttributeAnnotatable"
-       />
-  </class>
-
-  <class class=".file.NamedBlobImage">
-    <require
-        permission="zope.View"
-        interface=".interfaces.INamedBlobImage"
-        />
-
-    <require
-        permission="zope.ManageContent"
-        set_schema=".interfaces.INamedBlobImage"
-        />
-
-    <implements
-        interface="zope.annotation.interfaces.IAttributeAnnotatable"
-        />
-  </class>
-
-
   <!-- Image adapter. -->
   <!-- ============== -->
   <adapter
@@ -101,5 +66,7 @@
       provides="zope.size.interfaces.ISized"
       for=".interfaces.INamedImage"
       />
+
+  <include zcml:condition="installed z3c.blobfile" file="blobs.zcml" />
 
 </configure>

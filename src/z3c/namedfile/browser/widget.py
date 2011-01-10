@@ -174,7 +174,7 @@ class NamedImageWidget(NamedFileWidget):
 
     def tag(self, scale='preview', height=None, width=None):
         storage = AnnotationStorage(self.context, self.modified)
-        direction = 'down'
+        direction = 'thumbnail'
 
         if height is None and width is None:
             available = getAvailableSizes()

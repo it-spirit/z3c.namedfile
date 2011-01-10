@@ -5,7 +5,7 @@ import mimetypes
 import os.path
 
 # local imports
-from z3c.namedfile.interfaces import HAVE_BLOBS
+from z3c.namedfile.interfaces import HAVE_BLOBS, INamedFile
 
 if HAVE_BLOBS:
     from z3c.namedfile.interfaces import IBlobby
@@ -48,7 +48,7 @@ def set_headers(file, response, filename=None):
     response.setHeader("Content-Type", contenttype)
     response.setHeader("Content-Length", file.getSize())
 
-    if filename is not None:
+    if INamedFile.providedBy(file) and filename is not None:
         response.setHeader("Content-Disposition", "attachment; filename=\"%s\"" % filename)
 
 
