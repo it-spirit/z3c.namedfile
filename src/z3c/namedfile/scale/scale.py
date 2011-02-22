@@ -7,6 +7,8 @@ import PIL.Image
 import PIL.ImageFile
 
 # zope imports
+from z3c.namedfile.interfaces import IAvailableSizes
+from zope.component import queryUtility
 from ZODB.POSException import ConflictError
 
 
@@ -182,9 +184,19 @@ def createScale(context, fieldname, direction='thumbnail', **parameters):
 
 
 def getAvailableSizes():
-    return {
+    _sizes = {
         'thumb': (128, 128),
         'mini': (200, 200),
         'preview': (400, 400),
         'large': (768, 768),
     }
+
+    getAvailableSizes = queryUtility(IAvailableSizes)
+    if getAvailableSizes is None:
+        return _sizes
+
+    sizes = getAvailableSizes()
+    if sizes is None:
+        return {}
+
+    return sizes
