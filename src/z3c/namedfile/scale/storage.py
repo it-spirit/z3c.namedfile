@@ -93,7 +93,10 @@ class AnnotationStorage(DictMixin):
         key = self.hash(**parameters)
         storage = self.storage
         info = storage.get(key)
-        modified = self.modified and self.modified()
+        try:
+            modified = self.modified and self.modified()
+        except TypeError:
+            modified = self.modified and self.context.modified()
 
         if info is not None and modified > info['modified']:
             # invalidate when the image was updated
