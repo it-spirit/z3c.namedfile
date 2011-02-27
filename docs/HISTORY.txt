@@ -1,6 +1,15 @@
 Changelog
 =========
 
+0.1.1 (2011-02-27)
+------------------
+
+- Added utils module containing scale and tag functions.
+  [tmassman]
+
+- Small bugfixes.
+  [tmassman]
+
 0.1dev (unreleased)
 -------------------
 

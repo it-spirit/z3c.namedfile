@@ -3,7 +3,7 @@
 from setuptools import find_packages, setup
 import os
 
-version = '0.1'
+version = '0.1.1'
 
 setup(
     name='z3c.namedfile',
