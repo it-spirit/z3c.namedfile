@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
 
+# python imports
+from datetime import datetime
+import time
+
 # zope imports
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces import IPublishTraverse, NotFound
 from zope.security.proxy import removeSecurityProxy
+import zope.datetime
 
 # local imports
-from z3c.namedfile.utils import set_headers, stream_data
+from z3c.namedfile.utils import set_headers, stream_data, get_contenttype
 
 
 class Download(BrowserView):
@@ -56,9 +62,33 @@ class Download(BrowserView):
 
 
 class ScalingView(BrowserView):
+
     def __call__(self):
         data = removeSecurityProxy(self.context)
         fieldname = getattr(data, 'fieldname', getattr(self, 'fieldname', None))
 
-        set_headers(data.data, self.request.response, filename=data.data.filename)
+        try:
+            modified = IZopeDublinCore(data.context).modified
+        except TypeError:
+            modified = None
+
+        if modified is not None and isinstance(modified, datetime):
+            header = self.request.getHeader('If-Modified-Since', None)
+            if header is not None:
+                header = header.split(';')[0]
+                try:
+                    mod_since = long(zope.datetime.time(header))
+                except:
+                    mod_since = None
+
+                if mod_since is not None:
+                    lmt = long(time.mktime(modified.timetuple()))
+                    if lmt <= mod_since:
+                        contenttype = get_contenttype(data.data)
+                        self.request.response.setHeader("Content-Type", contenttype)
+                        self.request.response.setStatus(304)
+                        return ''
+
+        set_headers(data.data, self.request.response,
+            filename=data.data.filename, modified=modified)
         return stream_data(data.data)

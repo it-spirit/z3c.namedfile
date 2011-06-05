@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 # python imports
+import datetime
 import mimetypes
 import os.path
+import time
 
 # local imports
 from z3c.namedfile.interfaces import HAVE_BLOBS, INamedFile
@@ -38,7 +40,7 @@ def get_contenttype(file=None, filename=None,
     return default
 
 
-def set_headers(file, response, filename=None):
+def set_headers(file, response, filename=None, modified=None):
     """Set response headers for the given file.
 
     If filename is given, set the Content-Disposition to attachment.
@@ -47,6 +49,14 @@ def set_headers(file, response, filename=None):
 
     response.setHeader("Content-Type", contenttype)
     response.setHeader("Content-Length", file.getSize())
+    response.setHeader('Cache-Control', 'public,max-age=86400')
+    expires = (datetime.datetime.utcnow() + datetime.timedelta(days=1))
+    expires = expires.strftime("%a, %d %b %Y %H:%M:%S GMT")
+    response.setHeader('Expires', expires)
+
+    if modified is not None and isinstance(modified, datetime.datetime):
+        modified = modified.strftime("%a, %d %b %Y %H:%M:%S GMT")
+        response.setHeader('Last-Modified', modified)
 
     if INamedFile.providedBy(file) and filename is not None:
         response.setHeader("Content-Disposition", "attachment; filename=\"%s\"" % filename)
