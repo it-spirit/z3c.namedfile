@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.1.3 (2011-06-05)
+------------------
+
+- Fixed wrong 'Modified-Since' header generation (now uses zope.datetime).
+  [thomas]
+
+
 0.1.2 (2011-06-05)
 ------------------
 
