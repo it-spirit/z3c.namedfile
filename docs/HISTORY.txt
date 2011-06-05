@@ -1,16 +1,18 @@
 Changelog
 =========
 
+0.1.2 (2011-06-05)
+------------------
+
+- Respond with 304 (not modified) if request contains 'If-Modiefied-Since' header and image was not modified.
+  [thomas]
+
+
 0.1.1 (2011-02-27)
 ------------------
 
 - Added utils module containing scale and tag functions.
-  [tmassman]
+  [thomas]
 
 - Small bugfixes.
-  [tmassman]
-
-0.1dev (unreleased)
--------------------
-
-- Initial release
+  [thomas]
