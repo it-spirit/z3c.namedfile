@@ -6,6 +6,8 @@ import mimetypes
 import os.path
 import time
 
+import zope.datetime
+
 # local imports
 from z3c.namedfile.interfaces import HAVE_BLOBS, INamedFile
 
@@ -55,7 +57,8 @@ def set_headers(file, response, filename=None, modified=None):
     response.setHeader('Expires', expires)
 
     if modified is not None and isinstance(modified, datetime.datetime):
-        modified = modified.strftime("%a, %d %b %Y %H:%M:%S GMT")
+        # modified = modified.strftime("%a, %d %b %Y %H:%M:%S GMT")
+        modified = zope.datetime.rfc1123_date(long(time.mktime(modified.timetuple())))
         response.setHeader('Last-Modified', modified)
 
     if INamedFile.providedBy(file) and filename is not None:
