@@ -91,6 +91,7 @@ setup(
     install_requires=[
         'setuptools',
         # -*- Extra requirements: -*-
+        'zope.app.file',
     ],
     extras_require = {
         'blobs': ['z3c.blobfile', ],

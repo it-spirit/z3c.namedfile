@@ -9,6 +9,7 @@
 
   <include package=".browser" />
   <include package="zope.annotation" />
+  <include package="zope.app.file"/>
 
 
   <!-- Setting up content types. -->
