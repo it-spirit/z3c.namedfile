@@ -265,7 +265,9 @@ class Scaling(BrowserView):
 
         So stored image scales can be invalidated.
         """
-        dc = IZopeDublinCore(self.context.context)
+        unecure_context = removeSecurityProxy(self.context.context)
+        # dc = IZopeDublinCore(self.context.context)
+        dc = IZopeDublinCore(unecure_context)
         return dc.ModificationDate()
 
     def scale_image(self, fieldname=None, scale=None, **parameters):
