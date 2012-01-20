@@ -91,6 +91,7 @@ setup(
     install_requires=[
         'setuptools',
         # -*- Extra requirements: -*-
+        # 'plone.scale',
         'zope.app.file',
     ],
     extras_require = {

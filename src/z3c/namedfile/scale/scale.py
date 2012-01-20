@@ -3,6 +3,7 @@
 # python imports
 from cStringIO import StringIO
 from logging import exception
+import logging
 import PIL.Image
 import PIL.ImageFile
 
@@ -10,6 +11,8 @@ import PIL.ImageFile
 from z3c.namedfile.interfaces import IAvailableSizes
 from zope.component import queryUtility
 from ZODB.POSException import ConflictError
+
+logger = logging.getLogger('z3c.namedfile')
 
 
 # Set a larger buffer size. This fixes problems with jpeg decoding.
@@ -41,7 +44,18 @@ def scaleImage(image, width=None, height=None, direction='down', quality=88,
     if isinstance(image, str):
         image = StringIO(image)
 
-    image = PIL.Image.open(image)
+    try:
+        image = PIL.Image.open(image)
+    except IOError, e:
+        logger.warning("Error loading image: " + str(e))
+        return None
+
+    try:
+        image.load()
+    except Exception, e:
+        logger.warning("Error loading image: " + str(e))
+        return None
+
 
     # When we create a new image during scaling we loose the format
     # information, so remember it.

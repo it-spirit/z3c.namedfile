@@ -28,7 +28,7 @@
                   action view/action;
                   allow_nochange view/allow_nochange;">
   <span tal:on-error="nothing" tal:condition="python:exists and download_url and preview_url and action=='nochange'">
-    <img tal:attributes="src preview_url" /><br />
+    <img tal:replace="nothing" tal:attributes="src preview_url" /><br />
     <a tal:content="filename"
        tal:attributes="href download_url">Filename</a>
     <span class="discreet"> &mdash;

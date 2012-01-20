@@ -1,6 +1,24 @@
+# -*- coding: utf-8 -*-
+
+##############################################################################
+#
+# Copyright (c) 2012 Zope Foundation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE
+#
+##############################################################################
+""""""
+
 from z3c.namedfile.browser.scaling import ImageScale
 from z3c.namedfile.scale.scale import createScale, getAvailableSizes
 from z3c.namedfile.scale.storage import AnnotationStorage
+from zope.component.interfaces import ComponentLookupError
 from zope.dublincore.interfaces import IZopeDublinCore
 
 def modified(context):
@@ -25,8 +43,11 @@ def scale(context, request, fieldname, scale='preview', height=None,
             width, height = available[scale]
         direction = 'thumbnail'
 
-    info = storage.scale(factory=createScale,
-        fieldname=fieldname, height=height, width=width, direction=direction)
+    try:
+        info = storage.scale(factory=createScale, fieldname=fieldname,
+                             height=height, width=width, direction=direction)
+    except ComponentLookupError:
+        info = None
     if info is not None:
         return ImageScale(context, request, **info)
 
