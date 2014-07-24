@@ -21,8 +21,9 @@ logger = logging.getLogger('z3c.namedfile')
 PIL.ImageFile.MAXBLOCK = 1000000
 
 
-def scaleImage(image, width=None, height=None, direction='down', quality=88,
-    result=None):
+def scaleImage(
+        image, width=None, height=None, direction='down', quality=88,
+        result=None):
     """Scale a given image.
 
     Scale the given image data to another size and return the result as a
@@ -38,7 +39,7 @@ def scaleImage(image, width=None, height=None, direction='down', quality=88,
     size-tuple. Optionally a file-like object ca be given as the `result`
     parameter, in which the generated image scale will be stored.
 
-    The `width`, `height` and `direction` parameters will be passed to 
+    The `width`, `height` and `direction` parameters will be passed to
     :meth:`scalePILImage`, which performs the actual scaling.
     """
     if isinstance(image, str):
@@ -55,7 +56,6 @@ def scaleImage(image, width=None, height=None, direction='down', quality=88,
     except Exception, e:
         logger.warning("Error loading image: " + str(e))
         return None
-
 
     # When we create a new image during scaling we loose the format
     # information, so remember it.
@@ -87,8 +87,8 @@ def scalePILImage(image, width=None, height=None, direction='down'):
         direction = 'thumbnail'
 
     if direction == 'thumbnail' and not (width and height):
-        raise ValueError("Thumbnailing requires both width and height to be " \
-            "specified.")
+        raise ValueError(
+            "Thumbnailing requires both width and height to be specified.")
     elif width is None and height is None:
         raise ValueError("Either width or height need to be given.")
 
@@ -119,7 +119,7 @@ def scalePILImage(image, width=None, height=None, direction='down'):
     if width is None:
         scale_width = None
     else:
-        scale_width = (float(width)  / float(current_size[0]))
+        scale_width = (float(width) / float(current_size[0]))
 
     if scale_height == scale_width or direction == 'thumbnail':
         # The original image already has the right aspect ration, so we only
@@ -127,8 +127,9 @@ def scalePILImage(image, width=None, height=None, direction='down'):
         image.thumbnail((width, height), PIL.Image.ANTIALIAS)
     else:
         if direction == 'down':
-            if scale_height is None or (scale_width is not None and \
-                scale_width > scale_height):
+            if scale_height is None or (
+                scale_width is not None and scale_width > scale_height
+            ):
                 # Width is the smallest dimension (relatively), so scale up to
                 # the desired with
                 new_width = width
@@ -137,8 +138,9 @@ def scalePILImage(image, width=None, height=None, direction='down'):
                 new_height = height
                 new_width = int(round(current_size[0] * scale_height))
         else:
-            if scale_height is None or (scale_width is not None and \
-                scale_width < scale_height):
+            if scale_height is None or (
+                scale_width is not None and scale_width < scale_height
+            ):
                 # Width is the largest dimension (relatively), so scale up to
                 # the desired width
                 new_width = width
@@ -193,8 +195,10 @@ def createScale(context, fieldname, direction='thumbnail', **parameters):
     if result is not None:
         data, format, dimensions = result
         mimetype = 'image/%s' % format.lower()
-        value = orig_value.__class__(data, contentType=mimetype,
-            filename=orig_value.filename)
+        value = orig_value.__class__(
+            data,
+            contentType=mimetype, filename=orig_value.filename,
+        )
         value.fieldname = fieldname
         return value, format, dimensions
 

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""File types and fields for images, files and blob files with filenames."""
 
 # local imports
 from z3c.namedfile.file import NamedFile, NamedImage

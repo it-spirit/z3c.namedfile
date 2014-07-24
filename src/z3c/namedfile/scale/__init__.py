@@ -1,1 +1,2 @@
-# This file is initially left blank.
+# -*- coding: utf-8 -*-
+"""Image Scaling."""

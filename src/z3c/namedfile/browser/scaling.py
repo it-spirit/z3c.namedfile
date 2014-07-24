@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
+"""Image scaling."""
 
 # python imports
 from cgi import escape
 
 # zope imports
-from ZODB.POSException import ConflictError
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces import IPublishTraverse, NotFound
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
-from zope.traversing.interfaces import ITraversable, TraversalError
+from zope.traversing.interfaces import ITraversable
 
 # local imports
-from z3c.namedfile.interfaces import IAvailableSizes
 from z3c.namedfile.scale.storage import AnnotationStorage
 from z3c.namedfile.scale.scale import createScale, getAvailableSizes
 from z3c.namedfile.utils import set_headers, stream_data
@@ -42,8 +41,9 @@ class ImageScale(BrowserView):
     def absolute_url(self):
         return self.url
 
-    def tag(self, height=None, width=None, alt=None, css_class=None,
-        title=None, **kwargs):
+    def tag(
+            self, height=None, width=None, alt=None, css_class=None,
+            title=None, **kwargs):
         """Create a tag including scale."""
         if height is None:
             height = getattr(self, 'height', self.data.getImageSize()[1])
@@ -76,23 +76,15 @@ class ImageScale(BrowserView):
 
     def index_html(self):
         """Download the image."""
-        fieldname = getattr(self.data, 'fieldname', getattr(self, 'fieldname', None))
-        
-        set_headers(self.data, self.request.response, filename=self.data.filename)
+        set_headers(
+            self.data, self.request.response,
+            filename=self.data.filename,
+        )
         return stream_data(self.data)
 
     def __call__(self):
         # avoid the need to prefix with nocall: in TAL
         return self
-
-
-
-
-
-
-
-
-
 
 
 class ImageScaling(BrowserView):
@@ -122,8 +114,10 @@ class ImageScaling(BrowserView):
         else:
             # otherwise `name` must refer to a field...
             value = getattr(self.context, name)
-            scale_view = ImageScale(self.context, self.request, data=value,
-                fieldname=name)
+            scale_view = ImageScale(
+                self.context, self.request,
+                data=value, fieldname=name,
+            )
             return scale_view  # .__of__(self.context)
 
         if image is not None:
@@ -131,23 +125,6 @@ class ImageScaling(BrowserView):
             return image
         # return self
         raise NotFound(self, name, self.request)
-
-#     def traverse(self, name, furtherPath):
-#         """Used for path traversal, i.e. in zope page templates."""
-#         value = self.guarded_orig_image(name)
-#         if not furtherPath:
-#             image = ImageScale(self.context, self.request, data=value,
-#                 fieldname=name)
-#         else:
-#             image = self.scale(name, furtherPath.pop())
-# 
-#         if image is not None:
-#             return image.tag()
-# 
-#         raise TraversalError(self, name)
-# 
-#     def guarded_orig_image(self, fieldname):
-#         return getattr(self.context, fieldname)
 
     def modified(self):
         """Provide a callable to return the modification time of content items.
@@ -166,8 +143,9 @@ class ImageScaling(BrowserView):
             parameters.update(width=width, height=height)
 
         storage = AnnotationStorage(self.context, self.modified)
-        info = storage.scale(factory=createScale, fieldname=fieldname,
-            **parameters)
+        info = storage.scale(
+            factory=createScale, fieldname=fieldname, **parameters
+        )
 
         if info is not None:
             scale_view = ImageScale(self.context, self.request, **info)
