@@ -1,0 +1,27 @@
+CHANGES
+*******
+
+0.1.4 (2012-01-21)
+------------------
+
+- Return None if we can't handle the image file.
+- Permission problems with secured context. RSP for the moment...
+
+
+0.1.3 (2011-06-05)
+------------------
+
+- Fixed wrong 'Modified-Since' header generation (now uses zope.datetime).
+
+
+0.1.2 (2011-06-05)
+------------------
+
+- Respond with 304 (not modified) if request contains 'If-Modiefied-Since' header and image was not modified.
+
+
+0.1.1 (2011-02-27)
+------------------
+
+- Added utils module containing scale and tag functions.
+- Small bugfixes.
