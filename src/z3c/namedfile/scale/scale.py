@@ -47,7 +47,7 @@ def scaleImage(image, width=None, height=None, direction='down', quality=88,
     try:
         image = PIL.Image.open(image)
     except IOError, e:
-        logger.warning("Error loading image: " + str(e))
+        logger.warning("Error opening image: " + str(e))
         return None
 
     try:
@@ -172,10 +172,12 @@ def createScale(context, fieldname, direction='thumbnail', **parameters):
     """Factory for the image scales, see `IImageScaleStorage.scale`."""
     orig_value = getattr(context, fieldname)
 
-    if hasattr(orig_value, 'open'):
-        orig_data = orig_value.open()
-    else:
-        orig_data = getattr(orig_value, 'data', orig_value)
+    # import ipdb; ipdb.set_trace()
+    # if hasattr(orig_value, 'open'):
+    #     orig_data = orig_value.open()
+    # else:
+
+    orig_data = getattr(orig_value, 'data', orig_value)
 
     if not orig_data:
         return
