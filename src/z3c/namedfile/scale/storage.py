@@ -1,21 +1,5 @@
 # -*- coding: utf-8 -*-
-
-##############################################################################
-#
-# Copyright (c) 2010 Zope Foundation and Contributors.
-# All Rights Reserved.
-#
-# This software is subject to the provisions of the Zope Public License,
-# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
-# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
-# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
-# FOR A PARTICULAR PURPOSE
-#
-##############################################################################
-"""Image scaling storage.
-
-"""
+"""Image scaling storage."""
 
 # python imports
 from UserDict import DictMixin
@@ -108,9 +92,11 @@ class AnnotationStorage(DictMixin):
                 data, format, dimensions = result
                 width, height = dimensions
                 uid = str(uuid4())
-                info = dict(uid=uid, data=data, width=width, height=height,
+                info = dict(
+                    uid=uid, data=data, width=width, height=height,
                     mimetype='image/%s' % format.lower(), key=key,
-                    modified=modified)
+                    modified=modified,
+                )
                 storage[key] = storage[uid] = info
         return info
 
@@ -118,7 +104,7 @@ class AnnotationStorage(DictMixin):
         return self.storage[uid]
 
     def __setitem__(self, id, scale):
-        raise RuntimeError("New scales have to be created via scale().")
+        raise RuntimeError('New scales have to be created via scale().')
 
     def __delitem__(self, uid):
         storage = self.storage
@@ -133,6 +119,6 @@ class AnnotationStorage(DictMixin):
         return self.storage.keys()
 
     def has_key(self, uid):
-        return self.storage.has_key(uid)
+        return uid in self.storage
 
     __contains__ = has_key

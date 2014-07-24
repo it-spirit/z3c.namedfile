@@ -65,7 +65,9 @@ class ScalingView(BrowserView):
 
     def __call__(self):
         data = removeSecurityProxy(self.context)
-        fieldname = getattr(data, 'fieldname', getattr(self, 'fieldname', None))
+        fieldname = getattr(
+            data, 'fieldname', getattr(self, 'fieldname', None),
+        )
 
         try:
             modified = IZopeDublinCore(data.context).modified
@@ -85,10 +87,14 @@ class ScalingView(BrowserView):
                     lmt = long(time.mktime(modified.timetuple()))
                     if lmt <= mod_since:
                         contenttype = get_contenttype(data.data)
-                        self.request.response.setHeader("Content-Type", contenttype)
+                        self.request.response.setHeader(
+                            'Content-Type', contenttype,
+                        )
                         self.request.response.setStatus(304)
                         return ''
 
-        set_headers(data.data, self.request.response,
-            filename=data.data.filename, modified=modified)
+        set_headers(
+            data.data, self.request.response,
+            filename=data.data.filename, modified=modified,
+        )
         return stream_data(data.data)

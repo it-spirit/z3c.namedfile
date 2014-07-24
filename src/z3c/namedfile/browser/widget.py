@@ -8,7 +8,6 @@ except ImportError:
 import urllib
 
 # zope imports
-from ZODB.POSException import ConflictError
 from z3c.form.browser import file
 from z3c.form.interfaces import IDataManager, IFieldWidget, IFormLayer, NOVALUE
 from z3c.form.widget import FieldWidget
@@ -22,10 +21,17 @@ from zope.security._proxy import _Proxy as Proxy
 from zope.traversing.browser import absoluteURL
 
 # local imports
-from z3c.namedfile.browser.interfaces import INamedFileWidget, INamedImageWidget
+from z3c.namedfile.browser.interfaces import (
+    INamedFileWidget,
+    INamedImageWidget,
+)
 from z3c.namedfile.browser.scaling import ImageScale
-from z3c.namedfile.file import NamedFile
-from z3c.namedfile.interfaces import INamed, INamedFileField, INamedImage, INamedImageField
+from z3c.namedfile.interfaces import (
+    INamed,
+    INamedFileField,
+    INamedImage,
+    INamedImageField,
+)
 from z3c.namedfile.scale.scale import createScale, getAvailableSizes
 from z3c.namedfile.scale.storage import AnnotationStorage
 from z3c.namedfile.utils import safe_basename, set_headers, stream_data
@@ -36,7 +42,7 @@ class NamedFileWidget(file.FileWidget):
     implementsOnly(INamedFileWidget)
 
     klass = u'named-file-widget'
-    value = None # don't default to a string
+    value = None  # don't default to a string
 
     @property
     def allow_nochange(self):
@@ -80,23 +86,29 @@ class NamedFileWidget(file.FileWidget):
         if self.ignoreContext:
             return None
         if self.filename_encoded:
-            return "%s/++widget++%s/@@download/%s" % (self.request.getURL(),
-                self.field.__name__, self.filename_encoded)
+            return '%s/++widget++%s/@@download/%s' % (
+                self.request.getURL(),
+                self.field.__name__,
+                self.filename_encoded,
+            )
         else:
-            return "%s/++widget++%s/@@download" % (self.request.getURL(),
-                self.field.__name__)
+            return '%s/++widget++%s/@@download' % (
+                self.request.getURL(),
+                self.field.__name__,
+            )
 
     def action(self):
-        action = self.request.get("%s.action" % self.name, "nochange")
+        action = self.request.get('%s.action' % self.name, 'nochange')
         if hasattr(self.form, 'successMessage') and self.form.status == \
-            self.form.successMessage:
+                self.form.successMessage:
             # if form action completed successfully, we want nochange
             action = 'nochange'
         return action
 
     def extract(self, default=NOVALUE):
-        action = self.request.get("%s.action" % self.name, None)
-        if self.request.get('PATH_INFO', '').endswith('kss_z3cform_inline_validation'):
+        action = self.request.get('%s.action' % self.name, None)
+        if self.request.get('PATH_INFO', '').endswith(
+                'kss_z3cform_inline_validation'):
             action = 'nochange'
 
         if action == 'remove':
@@ -154,11 +166,16 @@ class NamedImageWidget(NamedFileWidget):
         if self.ignoreContext:
             return None
         if self.preview_scaling:
-            return "%s/++widget++%s/@@scaling/%s" % (self.request.getURL(),
-                self.field.__name__, self.preview_scaling)
+            return '%s/++widget++%s/@@scaling/%s' % (
+                self.request.getURL(),
+                self.field.__name__,
+                self.preview_scaling,
+            )
         else:
-            return "%s/++widget++%s/@@scaling" % (self.request.getURL(),
-                self.field.__name__)
+            return '%s/++widget++%s/@@scaling' % (
+                self.request.getURL(),
+                self.field.__name__,
+            )
 
     @property
     def alt(self):
@@ -183,8 +200,10 @@ class NamedImageWidget(NamedFileWidget):
             width, height = available[scale]
             direction = 'thumbnail'
 
-        info = storage.scale(factory=createScale,
-            fieldname=self.field.getName(), height=height, width=width, direction=direction)
+        info = storage.scale(
+            factory=createScale, fieldname=self.field.getName(),
+            height=height, width=width, direction=direction,
+        )
         if info is not None:
             return ImageScale(self.context, self.request, **info).tag()
 
@@ -207,8 +226,9 @@ class Download(BrowserView):
 
     def __call__(self):
         if self.context.ignoreContext:
-            raise NotFound("Cannot get the data file from a widget with no " \
-                           "context.")
+            raise NotFound(
+                'Cannot get the data file from a widget with no context.'
+            )
 
         context = self.context.context
         field = self.context.field
@@ -240,8 +260,9 @@ class Scaling(BrowserView):
 
     def __call__(self):
         if self.context.ignoreContext:
-            raise NotFound("Cannot get the data image from a widget with no " \
-                           "context.")
+            raise NotFound(
+                'Cannot get the data image from a widget with no context.'
+            )
 
         context = self.context.context
         field = self.context.field
@@ -279,8 +300,9 @@ class Scaling(BrowserView):
             parameters.update(width=width, height=height)
 
         storage = AnnotationStorage(self.context.context, self.modified)
-        info = storage.scale(factory=createScale, fieldname=fieldname,
-            **parameters)
+        info = storage.scale(
+            factory=createScale, fieldname=fieldname, **parameters
+        )
 
         if info is not None:
             scale_view = ImageScale(self.context.context, self.request, **info)

@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# python imports
+import pkg_resources
+
 # zope imports
 from zope import schema
 from zope.app.file.interfaces import IFile, IImage
@@ -7,10 +10,12 @@ from zope.interface import Interface
 from zope.schema.interfaces import IObject
 
 try:
-    from z3c.blobfile.interfaces import IBlobFile, IBlobImage
-    HAVE_BLOBS = True
-except ImportError:
+    pkg_resources.get_distribution('z3c.blobfile')
+except pkg_resources.DistributionNotFound:
     HAVE_BLOBS = False
+else:
+    HAVE_BLOBS = True
+    from z3c.blobfile.interfaces import IBlobFile, IBlobImage
 
 
 class IImageScaleTraversable(Interface):
@@ -25,7 +30,11 @@ class IAvailableSizes(Interface):
 class INamed(Interface):
     """An item with a filename."""
 
-    filename = schema.TextLine(title=u"Filename", required=False, default=None)
+    filename = schema.TextLine(
+        default=None,
+        required=False,
+        title=u'Filename',
+    )
 
 
 class INamedFile(INamed, IFile):
@@ -53,18 +62,14 @@ if HAVE_BLOBS:
     class IBlobby(Interface):
         """Marker interface for objects that support blobs."""
 
-
     class INamedBlobFile(INamedFile, IBlobby, IBlobFile):
         """A BLOB file with a filename."""
-
 
     class INamedBlobImage(INamedImage, IBlobby, IBlobImage):
         """A BLOB image with a filename."""
 
-
     class INamedBlobFileField(INamedFileField):
         """Field for storing INamedBlobFile objects."""
-
 
     class INamedBlobImageField(INamedImageField):
         """Field for storing INamedBlobImage objects."""

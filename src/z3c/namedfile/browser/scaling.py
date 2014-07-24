@@ -51,9 +51,9 @@ class ImageScale(BrowserView):
             width = getattr(self, 'width', self.data.getImageSize()[0])
 
         if alt is None:
-            alt = u""
+            alt = u''
         if title is None:
-            title = u""
+            title = u''
 
         values = {
             'src': self.url,

@@ -48,13 +48,13 @@ def scaleImage(
     try:
         image = PIL.Image.open(image)
     except IOError, e:
-        logger.warning("Error opening image: " + str(e))
+        logger.warning('Error opening image: ' + str(e))
         return None
 
     try:
         image.load()
     except Exception, e:
-        logger.warning("Error loading image: " + str(e))
+        logger.warning('Error loading image: ' + str(e))
         return None
 
     # When we create a new image during scaling we loose the format
@@ -88,19 +88,20 @@ def scalePILImage(image, width=None, height=None, direction='down'):
 
     if direction == 'thumbnail' and not (width and height):
         raise ValueError(
-            "Thumbnailing requires both width and height to be specified.")
+            'Thumbnailing requires both width and height to be specified.'
+        )
     elif width is None and height is None:
-        raise ValueError("Either width or height need to be given.")
+        raise ValueError('Either width or height need to be given.')
 
     if image.mode == 1:
         # Convert black & white to grayscale.
-        image = image.convert("L")
+        image = image.convert('L')
     elif image.mode == 'P':
         # Convert palette based images to 3x8bit+alpha.
-        image = image.convert("RGBA")
+        image = image.convert('RGBA')
     elif image.mode == 'CMYK':
         # Convert CMYK to RGB, allowing for web previews of print images.
-        image = image.convert("RGB")
+        image = image.convert('RGB')
 
     current_size = image.size
 

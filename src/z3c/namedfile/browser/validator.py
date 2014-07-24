@@ -9,7 +9,7 @@ from z3c.namedfile.interfaces import INamedField
 
 
 class InvalidState(ValidationError):
-    __doc__ = u"No file provided."
+    __doc__ = u'No file provided.'
 
 
 class NamedFileWidgetValidator(validator.SimpleFieldValidator):
@@ -17,11 +17,13 @@ class NamedFileWidgetValidator(validator.SimpleFieldValidator):
     def validate(self, value):
         """See interfaces.IValidator."""
 
-        action = self.request.get("%s.action" % self.widget.name, None)
+        action = self.request.get('%s.action' % self.widget.name, None)
         if action == 'replace' and value is None:
             raise InvalidState()
         return super(NamedFileWidgetValidator, self).validate(value)
 
 
-validator.WidgetValidatorDiscriminators(NamedFileWidgetValidator,
-    field=INamedField)
+validator.WidgetValidatorDiscriminators(
+    NamedFileWidgetValidator,
+    field=INamedField,
+)
