@@ -174,12 +174,6 @@ def scalePILImage(image, width=None, height=None, direction='down'):
 def createScale(context, fieldname, direction='thumbnail', **parameters):
     """Factory for the image scales, see `IImageScaleStorage.scale`."""
     orig_value = getattr(context, fieldname)
-
-    # import ipdb; ipdb.set_trace()
-    # if hasattr(orig_value, 'open'):
-    #     orig_data = orig_value.open()
-    # else:
-
     orig_data = getattr(orig_value, 'data', orig_value)
 
     if not orig_data:
