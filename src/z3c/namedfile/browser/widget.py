@@ -14,6 +14,7 @@ from z3c.form.widget import FieldWidget
 from zope.component import adapter, getMultiAdapter
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.interface import implementer, implements, implementsOnly
+from zope.location.interfaces import ILocation
 from zope.publisher.browser import BrowserView, FileUpload
 from zope.publisher.interfaces import IPublishTraverse, NotFound
 from zope.security.proxy import removeSecurityProxy
@@ -85,15 +86,16 @@ class NamedFileWidget(file.FileWidget):
             return None
         if self.ignoreContext:
             return None
+        url = absoluteURL(self.form, self.request)
         if self.filename_encoded:
             return '%s/++widget++%s/@@download/%s' % (
-                self.request.getURL(),
+                url,
                 self.field.__name__,
                 self.filename_encoded,
             )
         else:
             return '%s/++widget++%s/@@download' % (
-                self.request.getURL(),
+                url,
                 self.field.__name__,
             )
 
@@ -135,7 +137,10 @@ class NamedFileWidget(file.FileWidget):
         return value
 
     def absolute_url(self):
-        return absoluteURL(self.context, self.request)
+        context = self.context
+        if not ILocation.providedBy(context):
+            context = self.form.context
+        return absoluteURL(context, self.request)
 
 
 class NamedImageWidget(NamedFileWidget):
@@ -165,15 +170,16 @@ class NamedImageWidget(NamedFileWidget):
             return None
         if self.ignoreContext:
             return None
+        url = absoluteURL(self.form, self.request)
         if self.preview_scaling:
             return '%s/++widget++%s/@@scaling/%s' % (
-                self.request.getURL(),
+                url,
                 self.field.__name__,
                 self.preview_scaling,
             )
         else:
             return '%s/++widget++%s/@@scaling' % (
-                self.request.getURL(),
+                url,
                 self.field.__name__,
             )
 
