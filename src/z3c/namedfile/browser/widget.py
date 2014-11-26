@@ -86,7 +86,10 @@ class NamedFileWidget(file.FileWidget):
             return None
         if self.ignoreContext:
             return None
-        url = absoluteURL(self.form, self.request)
+        try:
+            url = absoluteURL(self.form, self.request)
+        except TypeError:
+            url = self.request.getURL()
         if self.filename_encoded:
             return '%s/++widget++%s/@@download/%s' % (
                 url,
@@ -170,7 +173,10 @@ class NamedImageWidget(NamedFileWidget):
             return None
         if self.ignoreContext:
             return None
-        url = absoluteURL(self.form, self.request)
+        try:
+            url = absoluteURL(self.form, self.request)
+        except TypeError:
+            url = self.request.getURL()
         if self.preview_scaling:
             return '%s/++widget++%s/@@scaling/%s' % (
                 url,
