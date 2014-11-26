@@ -15,13 +15,14 @@
                       onkeydown view/onkeydown;
                       onkeyup view/onkeyup"
       tal:define="value view/value;
-                  exists python:value is not None">
+                  exists python:value is not None;
+                  download_url view/download_url;">
   <span tal:define="fieldname view/field/__name__ | nothing;
                     filename view/filename;
                     filename_encoded view/filename_encoded;"
         tal:condition="python: exists and fieldname">
     <a tal:content="filename"
-       tal:attributes="href string:${view/absolute_url}/@@download/${fieldname}/${filename_encoded}">Filename</a>
+       tal:attributes="href download_url">Filename</a>
     <span class="discreet"> &mdash; <span tal:define="sizekb view/file_size" tal:replace="sizekb">100</span> KB</span>
   </span>
   <span tal:condition="not:exists" class="discreet" i18n:translate="no_file">No file</span>
