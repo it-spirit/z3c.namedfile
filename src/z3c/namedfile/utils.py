@@ -5,6 +5,7 @@ import datetime
 import mimetypes
 import os.path
 import time
+import urllib
 
 import zope.datetime
 
@@ -61,8 +62,12 @@ def set_headers(file, response, filename=None, modified=None):
         response.setHeader('Last-Modified', modified)
 
     if INamedFile.providedBy(file) and filename is not None:
+        if not isinstance(filename, unicode):
+            filename = unicode(filename, 'utf-8', errors='ignore')
+        filename = urllib.quote(filename.encode('utf8'))
         response.setHeader(
-            'Content-Disposition', 'attachment; filename="%s"' % filename,
+            'Content-Disposition',
+            'attachment; filename*=UTF-8\'\'%s' % filename,
         )
 
 
