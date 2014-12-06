@@ -39,8 +39,11 @@ class NamedDataConverter(BaseDataConverter):
             value.seek(0)
             data = value.read()
             if data or filename:
-                return self.field._type(data=data, contentType=contentType,
-                    filename=filename)
+                return self.field._type(
+                    data=data,
+                    contentType=contentType,
+                    filename=filename,
+                )
             else:
                 return self.field.missing_value
         else:
