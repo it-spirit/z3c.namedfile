@@ -139,6 +139,8 @@ class NamedFileWidget(file.FileWidget):
             if empty and not value.filename:
                 return default
             value.seek(0)
+        elif not value:
+            return default
         return value
 
     def absolute_url(self):
