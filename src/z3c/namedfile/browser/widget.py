@@ -145,6 +145,13 @@ class NamedFileWidget(file.FileWidget):
         if action == 'remove':
             return None
         elif action == 'nochange':
+            session = ISession(self.request)[SESSION_PKG_KEY]
+            token = self.uploaded_token
+            if token is None:
+                token = self.request.get('%s.token' % self.name, None)
+            if token in session:
+                self.uploaded_token = token
+                return session[token]
             if self.value is not None:
                 return self.value
             if self.ignoreContext:
