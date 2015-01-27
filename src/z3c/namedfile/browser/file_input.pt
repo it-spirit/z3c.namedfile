@@ -25,9 +25,11 @@
                   exists python: view.value is not None;
                   action view/action;
                   allow_nochange view/allow_nochange;">
-  <span tal:condition="python: exists and download_url and action=='nochange'">
-    <a tal:content="view/filename"
+
+  <span tal:condition="python: exists and action=='nochange'">
+    <a tal:condition="download_url" tal:content="view/filename"
        tal:attributes="href download_url">Filename</a>
+    <span tal:condition="not: download_url" tal:content="view/filename">Filename</span>
     <span class="discreet"> &mdash;
       <span tal:define="sizekb view/file_size" tal:replace="sizekb">100</span> KB
     </span>
