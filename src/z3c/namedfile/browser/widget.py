@@ -255,7 +255,7 @@ class NamedImageWidget(NamedFileWidget):
 
         if height is None and width is None:
             available = getAvailableSizes()
-            if not scale in available:
+            if scale not in available:
                 return None
             width, height = available[scale]
             direction = 'thumbnail'
@@ -354,7 +354,7 @@ class Scaling(BrowserView):
     def scale_image(self, fieldname=None, scale=None, **parameters):
         if scale is not None:
             available = getAvailableSizes()  # self.available_sizes
-            if not scale in available:
+            if scale not in available:
                 return None
             width, height = available[scale]
             parameters.update(width=width, height=height)
