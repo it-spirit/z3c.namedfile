@@ -162,6 +162,10 @@ class NamedFileWidget(file.FileWidget):
             if isinstance(value, Proxy):
                 value = removeSecurityProxy(value)
             return value
+        elif action == 'replace':
+            # set the action back to 'nochange' so that the button is
+            # preselected. Only applicable when form is reloaded with errors
+            self.request.form['%s.action' % self.name] = 'nochange'
 
         # empty unnamed FileUploads should not count as a value
         value = super(NamedFileWidget, self).extract(default)
