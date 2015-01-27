@@ -65,6 +65,7 @@ class NamedFileWidget(file.FileWidget):
 
     klass = u'named-file-widget'
     value = None  # don't default to a string
+    uploaded_token = None
 
     def __init__(self, request):
         super(NamedFileWidget, self).__init__(request)
@@ -166,6 +167,7 @@ class NamedFileWidget(file.FileWidget):
             value.seek(0)
             session = ISession(self.request)[SESSION_PKG_KEY]
             if self.unique_token not in session:
+                self.uploaded_token = self.unique_token
                 value = IDataConverter(self).toFieldValue(value)
                 session[self.unique_token] = value
         elif not value:
