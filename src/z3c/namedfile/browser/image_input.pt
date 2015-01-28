@@ -36,6 +36,12 @@
     </span>
   </span>
 
+  <div tal:condition="view/uploaded_token">
+    <input type="hidden" name="" value=""
+           tal:attributes="name string:${view/name}.token;
+                           value view/uploaded_token;">
+  </div>
+
   <div tal:condition="allow_nochange" style="padding-top: 1em;">
     <input type="radio"
            value="nochange"
