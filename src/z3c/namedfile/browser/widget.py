@@ -179,7 +179,6 @@ class NamedFileWidget(file.FileWidget):
                 return default
             value.seek(0)
             session = ISession(self.request)[SESSION_PKG_KEY]
-            import ipdb; ipdb.set_trace()
             if self.unique_token not in session:
                 self.uploaded_token = self.unique_token
                 value = IDataConverter(self).toFieldValue(value)
