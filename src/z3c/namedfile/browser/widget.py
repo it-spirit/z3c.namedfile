@@ -221,6 +221,8 @@ class NamedImageWidget(NamedFileWidget):
             return None
         if self.ignoreContext:
             return None
+        if self.uploaded_token:
+            return None
         try:
             url = absoluteURL(self.form, self.request)
         except TypeError:
