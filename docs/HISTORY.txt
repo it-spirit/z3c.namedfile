@@ -1,6 +1,14 @@
 Changelog
 =========
 
+
+0.2 (2015-02-13)
+------------------
+
+- Temporarily store a newly uploaded file/image in the user's session data storage in case the form is reloaded from errors.
+  [zach]
+
+
 0.1.4 (2012-01-21)
 ------------------
 
