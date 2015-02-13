@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 # python imports
+import base64
+import datetime
+import hashlib
+import random
 try:
     from os import SEEK_END
 except ImportError:
@@ -9,7 +13,12 @@ import urllib
 
 # zope imports
 from z3c.form.browser import file
-from z3c.form.interfaces import IDataManager, IFieldWidget, IFormLayer, NOVALUE
+from z3c.form.interfaces import (
+    IDataConverter,
+    IDataManager,
+    IFieldWidget,
+    IFormLayer,
+    NOVALUE)
 from z3c.form.widget import FieldWidget
 from zope.component import adapter, getMultiAdapter
 from zope.dublincore.interfaces import IZopeDublinCore
@@ -19,6 +28,7 @@ from zope.publisher.browser import BrowserView, FileUpload
 from zope.publisher.interfaces import IPublishTraverse, NotFound
 from zope.security.proxy import removeSecurityProxy
 from zope.security._proxy import _Proxy as Proxy
+from zope.session.interfaces import ISession
 from zope.traversing.browser import absoluteURL
 
 # local imports
@@ -37,6 +47,17 @@ from z3c.namedfile.scale.scale import createScale, getAvailableSizes
 from z3c.namedfile.scale.storage import AnnotationStorage
 from z3c.namedfile.utils import safe_basename, set_headers, stream_data
 
+SESSION_PKG_KEY = 'z3c.namedfile.widget'
+
+
+def generate_token():
+    return base64.b64encode(
+        hashlib.sha256(
+            str(random.getrandbits(256)) + str(datetime.datetime.now())
+        ).digest(),
+        random.choice(['rA', 'aZ', 'gQ', 'hH', 'hG', 'aR', 'DD'])
+    ).rstrip('==')
+
 
 class NamedFileWidget(file.FileWidget):
     """A widget for a named file object."""
@@ -44,6 +65,11 @@ class NamedFileWidget(file.FileWidget):
 
     klass = u'named-file-widget'
     value = None  # don't default to a string
+    uploaded_token = None
+
+    def __init__(self, request):
+        super(NamedFileWidget, self).__init__(request)
+        self.unique_token = generate_token()
 
     @property
     def allow_nochange(self):
@@ -86,6 +112,8 @@ class NamedFileWidget(file.FileWidget):
             return None
         if self.ignoreContext:
             return None
+        if self.uploaded_token:
+            return None
         try:
             url = absoluteURL(self.form, self.request)
         except TypeError:
@@ -119,6 +147,13 @@ class NamedFileWidget(file.FileWidget):
         if action == 'remove':
             return None
         elif action == 'nochange':
+            session = ISession(self.request)[SESSION_PKG_KEY]
+            token = self.uploaded_token
+            if token is None:
+                token = self.request.get('%s.token' % self.name, None)
+            if token in session:
+                self.uploaded_token = token
+                return session.get(token)
             if self.value is not None:
                 return self.value
             if self.ignoreContext:
@@ -129,6 +164,10 @@ class NamedFileWidget(file.FileWidget):
             if isinstance(value, Proxy):
                 value = removeSecurityProxy(value)
             return value
+        elif action == 'replace':
+            # set the action back to 'nochange' so that the button is
+            # preselected. Only applicable when form is reloaded with errors
+            self.request.form['%s.action' % self.name] = 'nochange'
 
         # empty unnamed FileUploads should not count as a value
         value = super(NamedFileWidget, self).extract(default)
@@ -139,6 +178,11 @@ class NamedFileWidget(file.FileWidget):
             if empty and not value.filename:
                 return default
             value.seek(0)
+            session = ISession(self.request)[SESSION_PKG_KEY]
+            if self.unique_token not in session:
+                self.uploaded_token = self.unique_token
+                value = IDataConverter(self).toFieldValue(value)
+                session[self.unique_token] = value
         elif not value:
             return default
         return value
@@ -177,6 +221,8 @@ class NamedImageWidget(NamedFileWidget):
             return None
         if self.ignoreContext:
             return None
+        if self.uploaded_token:
+            return None
         try:
             url = absoluteURL(self.form, self.request)
         except TypeError:
@@ -211,7 +257,7 @@ class NamedImageWidget(NamedFileWidget):
 
         if height is None and width is None:
             available = getAvailableSizes()
-            if not scale in available:
+            if scale not in available:
                 return None
             width, height = available[scale]
             direction = 'thumbnail'
@@ -310,7 +356,7 @@ class Scaling(BrowserView):
     def scale_image(self, fieldname=None, scale=None, **parameters):
         if scale is not None:
             available = getAvailableSizes()  # self.available_sizes
-            if not scale in available:
+            if scale not in available:
                 return None
             width, height = available[scale]
             parameters.update(width=width, height=height)
