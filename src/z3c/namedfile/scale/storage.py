@@ -3,13 +3,19 @@
 
 # python imports
 from UserDict import DictMixin
+from datetime import timedelta
 from uuid import uuid4
 
 # zope imports
 from persistent.dict import PersistentDict
 from zope.annotation import IAnnotations
+from zope.dublincore.interfaces import IZopeDublinCore
 from zope.interface import implements, Interface
-from zope.security.proxy import removeSecurityProxy
+from zope.security.proxy import Proxy, removeSecurityProxy
+
+# Keep old scales around for this amount of milliseconds.
+# This is one day:
+KEEP_SCALE_DAYS = 1
 
 
 class IImageScaleStorage(Interface):
@@ -83,12 +89,16 @@ class AnnotationStorage(DictMixin):
             modified = self.modified and self.context.modified()
 
         if info is not None and modified > info['modified']:
+            del storage[key]
             # invalidate when the image was updated
             info = None
 
         if info is None and factory:
             result = factory(removeSecurityProxy(self.context), **parameters)
             if result is not None:
+                # storage will be modified:
+                # good time to also cleanup
+                self._cleanup()
                 data, format, dimensions = result
                 width, height = dimensions
                 uid = str(uuid4())
@@ -122,3 +132,27 @@ class AnnotationStorage(DictMixin):
         return uid in self.storage
 
     __contains__ = has_key
+
+    def _cleanup(self):
+        storage = self.storage
+        modified_time = self.modified_time
+        if modified_time is None:
+            return
+        keep_time = modified_time - timedelta(days=KEEP_SCALE_DAYS)
+        keep_time_iso = keep_time.isoformat()
+        for key, value in storage.items():
+            # clear cache from scales older than one day
+            if (modified_time and value['modified'] < keep_time_iso):
+                del storage[key]
+
+    @property
+    def modified_time(self):
+        context = self.context
+        if isinstance(context, Proxy):
+            context = removeSecurityProxy(context)
+        try:
+            dc = IZopeDublinCore(context)
+        except Exception:
+            return None
+        else:
+            return dc.modified
