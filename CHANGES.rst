@@ -1,6 +1,20 @@
 CHANGES
 *******
 
+0.3.dev0 (unreleased)
+---------------------
+
+- Clean up old scales when image changes.
+
+
+0.2 (2015-02-13)
+----------------
+
+- Fix url generation for widget downloads/previews.
+- Fix unicode errors for filenames.
+- Keep uploaded files/images on form reload.
+
+
 0.1.4 (2012-01-21)
 ------------------
 
