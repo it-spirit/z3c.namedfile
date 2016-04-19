@@ -13,6 +13,9 @@ from zope.dublincore.interfaces import IZopeDublinCore
 from zope.interface import implements, Interface
 from zope.security.proxy import Proxy, removeSecurityProxy
 
+# local imports
+from z3c.namedfile import logger
+
 # Keep old scales around for this amount of milliseconds.
 # This is one day:
 KEEP_SCALE_DAYS = 1
@@ -133,16 +136,29 @@ class AnnotationStorage(DictMixin):
 
     __contains__ = has_key
 
-    def _cleanup(self):
+    def _cleanup(self, force=False):
         storage = self.storage
+        count = len(self.keys())
+        if count == 0:
+            return
+
+        logger.debug('Object: {0}, Scales: {1}'.format(
+            self.context.__name__, count
+        ))
         modified_time = self.modified_time
         if modified_time is None:
-            return
-        keep_time = modified_time - timedelta(days=KEEP_SCALE_DAYS)
-        keep_time_iso = keep_time.isoformat()
+            if not force:
+                return
+        else:
+            keep_time = modified_time - timedelta(days=KEEP_SCALE_DAYS)
+            keep_time_iso = keep_time.isoformat()
         for key, value in storage.items():
             # clear cache from scales older than one day
-            if (modified_time and value['modified'] < keep_time_iso):
+            if (modified_time and value['modified'] < keep_time_iso) or force:
+                logger.debug('Removed scale from {0} with key {1}'.format(
+                    self.context,
+                    key,
+                ))
                 del storage[key]
 
     @property
