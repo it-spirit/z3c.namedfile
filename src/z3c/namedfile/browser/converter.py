@@ -2,19 +2,21 @@
 
 # zope imports
 from z3c.form.converter import BaseDataConverter
-from zope.component import adapts
+from zope.component import adapter
 from zope.publisher.browser import FileUpload
 
 # local imports
 from z3c.namedfile.browser.interfaces import INamedFileWidget
-from z3c.namedfile.interfaces import INamed, INamedField
+from z3c.namedfile.interfaces import (
+    INamed,
+    INamedField,
+)
 from z3c.namedfile.utils import safe_basename
 
 
+@adapter(INamedField, INamedFileWidget)
 class NamedDataConverter(BaseDataConverter):
     """Converts from a file-upload to a NamedFile variant."""
-
-    adapts(INamedField, INamedFileWidget)
 
     def toWidgetValue(self, value):
         return value

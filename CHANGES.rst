@@ -5,6 +5,7 @@ Changelog
 ---------------------
 
 - Clean up old scales when image changes.
+- Code cleanup (fixed code-analysis errors).
 
 
 0.2 (2015-02-13)

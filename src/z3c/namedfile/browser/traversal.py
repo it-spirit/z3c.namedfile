@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
 # zope imports
-from zope.interface import implements
+from zope.interface import implementer
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.interfaces import ITraversable
 
 
+@implementer(ITraversable)
 class WidgetTraversable(object):
     """Traverser from a z3c.form to its widgets.
 
     /context/@@form/++widget++fieldname is the widget belonging to the form
     field 'fieldname'.
     """
-    implements(ITraversable)
 
     def __init__(self, context, request):
         self.context = removeSecurityProxy(context)
@@ -21,7 +21,7 @@ class WidgetTraversable(object):
     def traverse(self, name, remaining):
         form = self.context
         form.update()
-        if hasattr(form, 'groups') and form.groups:
+        if getattr(form, 'groups', None) is not None:
             widget = self.find_widget(form, name)
         else:
             widget = form.widgets[name]

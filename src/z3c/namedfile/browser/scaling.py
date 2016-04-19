@@ -6,17 +6,26 @@ from cgi import escape
 
 # zope imports
 from zope.dublincore.interfaces import IZopeDublinCore
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.browser import BrowserView
-from zope.publisher.interfaces import IPublishTraverse, NotFound
+from zope.publisher.interfaces import (
+    IPublishTraverse,
+    NotFound,
+)
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
 from zope.traversing.interfaces import ITraversable
 
 # local imports
 from z3c.namedfile.scale.storage import AnnotationStorage
-from z3c.namedfile.scale.scale import createScale, getAvailableSizes
-from z3c.namedfile.utils import set_headers, stream_data
+from z3c.namedfile.scale.scale import (
+    createScale,
+    getAvailableSizes,
+)
+from z3c.namedfile.utils import (
+    set_headers,
+    stream_data,
+)
 
 
 class ImageScale(BrowserView):
@@ -32,11 +41,11 @@ class ImageScale(BrowserView):
         extension = self.data.contentType.split('/')[-1].lower()
 
         if 'uid' in info:
-            self.__name__ = '%s.%s' % (info['uid'], extension)
-            self.url = '%s/@@scaling/%s' % (url, self.__name__)
+            self.__name__ = '{0}.{1}'.format(info['uid'], extension)
+            self.url = '{0}/@@scaling/{1}'.format(url, self.__name__)
         else:
             self.__name__ = info['fieldname']
-            self.url = '%s/@@scaling/%s' % (url, info['fieldname'])
+            self.url = '{0}/@@scaling/{1}'.format(url, info['fieldname'])
 
     def absolute_url(self):
         return self.url
@@ -63,16 +72,16 @@ class ImageScale(BrowserView):
             'width': width,
         }
 
-        result = '<img src="%(src)s" alt="%(alt)s" title="%(title)s" ' \
-                 'height="%(height)s" width="%(width)s"' % values
+        result = '<img src="{src}" alt="{alt}" title="{title}" ' \
+                 'height="{height}" width="{width}"'.format(**values)
 
         if css_class is not None:
-            result = '%s class="%s"' % (result, css_class)
+            result = '{0} class="{1}"'.format(result, css_class)
 
         for key, value in kwargs.items():
-            result = '%s %s="%s"' % (result, key, value)
+            result = '{0} {1}="{2}"'.format(result, key, value)
 
-        return '%s />' % result
+        return '{0} />'.format(result)
 
     def index_html(self):
         """Download the image."""
@@ -87,9 +96,9 @@ class ImageScale(BrowserView):
         return self
 
 
+@implementer(ITraversable, IPublishTraverse)
 class ImageScaling(BrowserView):
     """View used for generating (and storing) image scales."""
-    implements(ITraversable, IPublishTraverse)
 
     def __init__(self, context, request):
         self.context = removeSecurityProxy(context)
@@ -137,7 +146,7 @@ class ImageScaling(BrowserView):
     def scale(self, fieldname=None, scale=None, **parameters):
         if scale is not None:
             available = getAvailableSizes()
-            if not scale in available:
+            if scale not in available:
                 return None
             width, height = available[scale]
             parameters.update(width=width, height=height)

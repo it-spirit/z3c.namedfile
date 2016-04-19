@@ -21,7 +21,7 @@ def safe_basename(filename):
     return filename[max(filename.rfind('/'),
                         filename.rfind('\\'),
                         filename.rfind(':'),
-                        )+1:]
+                        ) + 1:]
 
 
 def get_contenttype(file=None, filename=None,
@@ -67,7 +67,7 @@ def set_headers(file, response, filename=None, modified=None):
         filename = urllib.quote(filename.encode('utf8'))
         response.setHeader(
             'Content-Disposition',
-            'attachment; filename*=UTF-8\'\'%s' % filename,
+            'attachment; filename*=UTF-8\'\'{0}'.format(filename),
         )
 
 

@@ -10,8 +10,14 @@ from uuid import uuid4
 from persistent.dict import PersistentDict
 from zope.annotation import IAnnotations
 from zope.dublincore.interfaces import IZopeDublinCore
-from zope.interface import implements, Interface
-from zope.security.proxy import Proxy, removeSecurityProxy
+from zope.interface import (
+    Interface,
+    implementer,
+)
+from zope.security.proxy import (
+    Proxy,
+    removeSecurityProxy,
+)
 
 # local imports
 from z3c.namedfile import logger
@@ -54,6 +60,7 @@ class IImageScaleStorage(Interface):
         """Find image scale data based on its uid."""
 
 
+@implementer(IImageScaleStorage)
 class AnnotationStorage(DictMixin):
     """Abstract image storage mixin.
 
@@ -62,7 +69,6 @@ class AnnotationStorage(DictMixin):
     object container, i.e. the image. This is needed since not all images are
     themselves annotatable.
     """
-    implements(IImageScaleStorage)
 
     def __init__(self, context, modified=None):
         self.context = context
@@ -70,7 +76,7 @@ class AnnotationStorage(DictMixin):
 
     def __repr__(self):
         name = self.__class__.__name__
-        return '<%s context=%r>' % (name, self.context)
+        return '<{0} context={1}>'.format(name, self.context)
 
     __str__ = __repr__
 
@@ -107,7 +113,7 @@ class AnnotationStorage(DictMixin):
                 uid = str(uuid4())
                 info = dict(
                     uid=uid, data=data, width=width, height=height,
-                    mimetype='image/%s' % format.lower(), key=key,
+                    mimetype='image/{0}'.format(format.lower()), key=key,
                     modified=modified,
                 )
                 storage[key] = storage[uid] = info

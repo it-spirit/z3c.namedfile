@@ -3,33 +3,40 @@
 # zope imports
 from zope.app.file.file import File
 from zope.app.file.image import Image
-from zope.interface import implements
+from zope.interface import implementer
 
 # local imports
-from z3c.namedfile.interfaces import HAVE_BLOBS, INamedFile, INamedImage
+from z3c.namedfile.interfaces import (
+    HAVE_BLOBS,
+    INamedFile,
+    INamedImage,
+)
 from z3c.namedfile.utils import get_contenttype
 
 if HAVE_BLOBS:
     from z3c.blobfile.file import File as BlobFile
     from z3c.blobfile.image import Image as BlobImage
-    from z3c.namedfile.interfaces import INamedBlobFile, INamedBlobImage
+    from z3c.namedfile.interfaces import (
+        INamedBlobFile,
+        INamedBlobImage,
+    )
 
 
+@implementer(INamedFile)
 class NamedFile(File):
     """A non-BLOB file that stores a filename."""
-    implements(INamedFile)
 
     def __init__(self, data='', contentType='', filename=None):
         if filename is not None and contentType in \
-            ('', 'application/octet-stream'):
+                ('', 'application/octet-stream'):
             contentType = get_contenttype(filename=filename)
         super(NamedFile, self).__init__(data, contentType)
         self.filename = filename
 
 
+@implementer(INamedImage)
 class NamedImage(Image):
     """An non-BLOB image with a filename."""
-    implements(INamedImage)
 
     def __init__(self, data='', contentType='', filename=None):
         super(NamedImage, self).__init__(data)
@@ -42,21 +49,20 @@ class NamedImage(Image):
 
 if HAVE_BLOBS:
 
+    @implementer(INamedBlobFile)
     class NamedBlobFile(BlobFile):
         """A file stored in a ZODB BLOB, file a filename."""
-        implements(INamedBlobFile)
 
         def __init__(self, data='', contentType='', filename=None):
             if filename is not None and contentType in \
-                ('', 'application/octet-stream'):
+                    ('', 'application/octet-stream'):
                 contentType = get_contenttype(filename=filename)
             super(NamedBlobFile, self).__init__(data, contentType)
             self.filename = filename
 
-
+    @implementer(INamedBlobImage)
     class NamedBlobImage(BlobImage):
         """An image stored in a ZODB BLOB with a filename."""
-        implements(INamedBlobImage)
 
         def __init__(self, data='', contentType='', filename=None):
             super(NamedBlobImage, self).__init__(data)

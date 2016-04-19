@@ -20,12 +20,24 @@ from z3c.form.interfaces import (
     IFormLayer,
     NOVALUE)
 from z3c.form.widget import FieldWidget
-from zope.component import adapter, getMultiAdapter
+from zope.component import (
+    adapter,
+    getMultiAdapter,
+)
 from zope.dublincore.interfaces import IZopeDublinCore
-from zope.interface import implementer, implements, implementsOnly
+from zope.interface import (
+    implementer,
+    implementsOnly,
+)
 from zope.location.interfaces import ILocation
-from zope.publisher.browser import BrowserView, FileUpload
-from zope.publisher.interfaces import IPublishTraverse, NotFound
+from zope.publisher.browser import (
+    BrowserView,
+    FileUpload,
+)
+from zope.publisher.interfaces import (
+    IPublishTraverse,
+    NotFound,
+)
 from zope.security.proxy import removeSecurityProxy
 from zope.security._proxy import _Proxy as Proxy
 from zope.session.interfaces import ISession
@@ -119,27 +131,27 @@ class NamedFileWidget(file.FileWidget):
         except TypeError:
             url = self.request.getURL()
         if self.filename_encoded:
-            return '%s/++widget++%s/@@download/%s' % (
+            return '{0}/++widget++{1}/@@download/{2}'.format(
                 url,
                 self.field.__name__,
                 self.filename_encoded,
             )
         else:
-            return '%s/++widget++%s/@@download' % (
+            return '{0}/++widget++{1}/@@download'.format(
                 url,
                 self.field.__name__,
             )
 
     def action(self):
-        action = self.request.get('%s.action' % self.name, 'nochange')
-        if hasattr(self.form, 'successMessage') and self.form.status == \
+        action = self.request.get('{0}.action'.format(self.name), 'nochange')
+        if getattr(self.form, 'successMessage', None) and self.form.status == \
                 self.form.successMessage:
             # if form action completed successfully, we want nochange
             action = 'nochange'
         return action
 
-    def extract(self, default=NOVALUE):
-        action = self.request.get('%s.action' % self.name, None)
+    def extract(self, default=NOVALUE):  # noqa
+        action = self.request.get('{0}.action'.format(self.name), None)
         if self.request.get('PATH_INFO', '').endswith(
                 'kss_z3cform_inline_validation'):
             action = 'nochange'
@@ -150,7 +162,7 @@ class NamedFileWidget(file.FileWidget):
             session = ISession(self.request)[SESSION_PKG_KEY]
             token = self.uploaded_token
             if token is None:
-                token = self.request.get('%s.token' % self.name, None)
+                token = self.request.get('{0}.token'.format(self.name), None)
             if token in session:
                 self.uploaded_token = token
                 return session.get(token)
@@ -160,14 +172,14 @@ class NamedFileWidget(file.FileWidget):
                 return default
             dm = getMultiAdapter((self.context, self.field), IDataManager)
             value = dm.query()
-            # TODO: Do we realy have to remove the security proxy?
+
             if isinstance(value, Proxy):
                 value = removeSecurityProxy(value)
             return value
         elif action == 'replace':
             # set the action back to 'nochange' so that the button is
             # preselected. Only applicable when form is reloaded with errors
-            self.request.form['%s.action' % self.name] = 'nochange'
+            self.request.form['{0}.action'.format(self.name)] = 'nochange'
 
         # empty unnamed FileUploads should not count as a value
         value = super(NamedFileWidget, self).extract(default)
@@ -228,13 +240,13 @@ class NamedImageWidget(NamedFileWidget):
         except TypeError:
             url = self.request.getURL()
         if self.preview_scaling:
-            return '%s/++widget++%s/@@scaling/%s' % (
+            return '{0}/++widget++{1}/@@scaling/{2}'.format(
                 url,
                 self.field.__name__,
                 self.preview_scaling,
             )
         else:
-            return '%s/++widget++%s/@@scaling' % (
+            return '{0}/++widget++{1}/@@scaling'.format(
                 url,
                 self.field.__name__,
             )
@@ -270,8 +282,8 @@ class NamedImageWidget(NamedFileWidget):
             return ImageScale(self.context, self.request, **info).tag()
 
 
+@implementer(IPublishTraverse)
 class Download(BrowserView):
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         context = removeSecurityProxy(context)
@@ -304,8 +316,8 @@ class Download(BrowserView):
         return stream_data(file_)
 
 
+@implementer(IPublishTraverse)
 class Scaling(BrowserView):
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         context = removeSecurityProxy(context)
