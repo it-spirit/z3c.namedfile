@@ -6,16 +6,24 @@ import time
 
 # zope imports
 from zope.dublincore.interfaces import IZopeDublinCore
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.browser import BrowserView
-from zope.publisher.interfaces import IPublishTraverse, NotFound
+from zope.publisher.interfaces import (
+    IPublishTraverse,
+    NotFound,
+)
 from zope.security.proxy import removeSecurityProxy
 import zope.datetime
 
 # local imports
-from z3c.namedfile.utils import set_headers, stream_data, get_contenttype
+from z3c.namedfile.utils import (
+    get_contenttype,
+    set_headers,
+    stream_data,
+)
 
 
+@implementer(IPublishTraverse)
 class Download(BrowserView):
     """Download a file, via ../context/@@download/fieldname/filename
 
@@ -26,7 +34,6 @@ class Download(BrowserView):
     The attribute under `fieldname` should contain a named (blob) file/image
     instance from this package.
     """
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         super(Download, self).__init__(context, request)
@@ -65,9 +72,9 @@ class ScalingView(BrowserView):
 
     def __call__(self):
         data = removeSecurityProxy(self.context)
-        fieldname = getattr(
-            data, 'fieldname', getattr(self, 'fieldname', None),
-        )
+        # fieldname = getattr(
+        #     data, 'fieldname', getattr(self, 'fieldname', None),
+        # )
 
         try:
             modified = IZopeDublinCore(data.context).modified
@@ -80,7 +87,7 @@ class ScalingView(BrowserView):
                 header = header.split(';')[0]
                 try:
                     mod_since = long(zope.datetime.time(header))
-                except:
+                except Exception:
                     mod_since = None
 
                 if mod_since is not None:

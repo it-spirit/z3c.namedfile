@@ -10,8 +10,17 @@ from uuid import uuid4
 from persistent.dict import PersistentDict
 from zope.annotation import IAnnotations
 from zope.dublincore.interfaces import IZopeDublinCore
-from zope.interface import implements, Interface
-from zope.security.proxy import Proxy, removeSecurityProxy
+from zope.interface import (
+    Interface,
+    implementer,
+)
+from zope.security.proxy import (
+    Proxy,
+    removeSecurityProxy,
+)
+
+# local imports
+from z3c.namedfile import logger
 
 # Keep old scales around for this amount of milliseconds.
 # This is one day:
@@ -51,6 +60,7 @@ class IImageScaleStorage(Interface):
         """Find image scale data based on its uid."""
 
 
+@implementer(IImageScaleStorage)
 class AnnotationStorage(DictMixin):
     """Abstract image storage mixin.
 
@@ -59,7 +69,6 @@ class AnnotationStorage(DictMixin):
     object container, i.e. the image. This is needed since not all images are
     themselves annotatable.
     """
-    implements(IImageScaleStorage)
 
     def __init__(self, context, modified=None):
         self.context = context
@@ -67,7 +76,7 @@ class AnnotationStorage(DictMixin):
 
     def __repr__(self):
         name = self.__class__.__name__
-        return '<%s context=%r>' % (name, self.context)
+        return '<{0} context={1}>'.format(name, self.context)
 
     __str__ = __repr__
 
@@ -104,7 +113,7 @@ class AnnotationStorage(DictMixin):
                 uid = str(uuid4())
                 info = dict(
                     uid=uid, data=data, width=width, height=height,
-                    mimetype='image/%s' % format.lower(), key=key,
+                    mimetype='image/{0}'.format(format.lower()), key=key,
                     modified=modified,
                 )
                 storage[key] = storage[uid] = info
@@ -133,16 +142,29 @@ class AnnotationStorage(DictMixin):
 
     __contains__ = has_key
 
-    def _cleanup(self):
+    def _cleanup(self, force=False):
         storage = self.storage
+        count = len(self.keys())
+        if count == 0:
+            return
+
+        logger.debug('Object: {0}, Scales: {1}'.format(
+            self.context.__name__, count
+        ))
         modified_time = self.modified_time
         if modified_time is None:
-            return
-        keep_time = modified_time - timedelta(days=KEEP_SCALE_DAYS)
-        keep_time_iso = keep_time.isoformat()
+            if not force:
+                return
+        else:
+            keep_time = modified_time - timedelta(days=KEEP_SCALE_DAYS)
+            keep_time_iso = keep_time.isoformat()
         for key, value in storage.items():
             # clear cache from scales older than one day
-            if (modified_time and value['modified'] < keep_time_iso):
+            if (modified_time and value['modified'] < keep_time_iso) or force:
+                logger.debug('Removed scale from {0} with key {1}'.format(
+                    self.context,
+                    key,
+                ))
                 del storage[key]
 
     @property

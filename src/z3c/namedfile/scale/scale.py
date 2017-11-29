@@ -76,7 +76,7 @@ def scaleImage(
     return result, format, image.size
 
 
-def scalePILImage(image, width=None, height=None, direction='down'):
+def scalePILImage(image, width=None, height=None, direction='down'):  # noqa
     """Scale a PIL Image to another size.
 
     The generated image is a JPEG image, unless the original image is a PNG
@@ -184,12 +184,12 @@ def createScale(context, fieldname, direction='thumbnail', **parameters):
     except (ConflictError, KeyboardInterrupt):
         raise
     except Exception:
-        exception('Could not scale "%r".', orig_value)
+        exception('Could not scale "{0}".'.format(orig_value))
         return
 
     if result is not None:
         data, format, dimensions = result
-        mimetype = 'image/%s' % format.lower()
+        mimetype = 'image/{0}'.format(format.lower())
         value = orig_value.__class__(
             data,
             contentType=mimetype, filename=orig_value.filename,
