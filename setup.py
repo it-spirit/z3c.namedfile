@@ -6,7 +6,7 @@ from setuptools import (
     setup,
 )
 
-version = '0.3.dev0'
+version = '0.3'
 description = 'File types and fields for images, files and blob files ' \
               'with filenames.'
 

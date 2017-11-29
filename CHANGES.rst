@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.3.dev0 (unreleased)
----------------------
+0.3 (2017-11-29)
+----------------
 
 - Clean up old scales when image changes.
 - Code cleanup (fixed code-analysis errors).
