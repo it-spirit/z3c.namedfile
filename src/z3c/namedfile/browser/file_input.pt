@@ -31,7 +31,7 @@
        tal:attributes="href download_url">Filename</a>
     <span tal:condition="not: download_url" tal:content="view/filename">Filename</span>
     <span class="discreet"> &mdash;
-      <span tal:define="sizekb view/file_size" tal:replace="sizekb">100</span> KB
+      <span tal:define="sizekb view/file_size" tal:replace="sizekb">100</span> <span i18n:translate="">KB</span>
     </span>
   </span>
 

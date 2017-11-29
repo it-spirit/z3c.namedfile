@@ -23,7 +23,7 @@
         tal:condition="python: exists and fieldname">
     <a tal:content="filename"
        tal:attributes="href download_url">Filename</a>
-    <span class="discreet"> &mdash; <span tal:define="sizekb view/file_size" tal:replace="sizekb">100</span> KB</span>
+    <span class="discreet"> &mdash; <span tal:define="sizekb view/file_size" tal:replace="sizekb">100</span> <span i18n:translate="">KB</span></span>
   </span>
   <span tal:condition="not:exists" class="discreet" i18n:translate="no_file">No file</span>
 </span>
