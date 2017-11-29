@@ -1,19 +1,15 @@
-# Unix-style newlines with a newline ending every file
 [*]
+indent_style = space
 end_of_line = lf
 insert_final_newline = true
+trim_trailing_whitespace = true
+charset = utf-8
 
-# 2 space indentation
-[*.js]
-indent_size = 2
-indent_style = space
-
-# 2 space indentation
-[{*.html,*.dtml,*.pt,*.xml,*.zcml}]
-indent_size = 2
-indent_style = space
-
-# 4 space indentation
-[*.py]
+[*.{py,cfg}]
 indent_size = 4
-indent_style = space
+
+[*.{html,dtml,pt,zpt,xml,zcml,js}]
+indent_size = 2
+
+[Makefile]
+indent_style = tab
