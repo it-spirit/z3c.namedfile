@@ -1,2 +1,5 @@
-recursive-include src *
-global-exclude *pyc
+graft src
+graft docs
+include *.rst
+global-exclude *.pyc
+prune docs/build
