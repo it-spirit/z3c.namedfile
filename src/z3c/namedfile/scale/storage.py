@@ -1,26 +1,18 @@
 # -*- coding: utf-8 -*-
 """Image scaling storage."""
 
-# python imports
-from UserDict import DictMixin
 from datetime import timedelta
-from uuid import uuid4
-
-# zope imports
 from persistent.dict import PersistentDict
+from UserDict import DictMixin
+from uuid import uuid4
+from z3c.namedfile import logger
 from zope.annotation import IAnnotations
 from zope.dublincore.interfaces import IZopeDublinCore
-from zope.interface import (
-    Interface,
-    implementer,
-)
-from zope.security.proxy import (
-    Proxy,
-    removeSecurityProxy,
-)
+from zope.interface import implementer
+from zope.interface import Interface
+from zope.security.proxy import Proxy
+from zope.security.proxy import removeSecurityProxy
 
-# local imports
-from z3c.namedfile import logger
 
 # Keep old scales around for this amount of milliseconds.
 # This is one day:

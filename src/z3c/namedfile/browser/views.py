@@ -1,26 +1,18 @@
 # -*- coding: utf-8 -*-
 
-# python imports
 from datetime import datetime
-import time
-
-# zope imports
+from z3c.namedfile.utils import get_contenttype
+from z3c.namedfile.utils import set_headers
+from z3c.namedfile.utils import stream_data
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.interface import implementer
 from zope.publisher.browser import BrowserView
-from zope.publisher.interfaces import (
-    IPublishTraverse,
-    NotFound,
-)
+from zope.publisher.interfaces import IPublishTraverse
+from zope.publisher.interfaces import NotFound
 from zope.security.proxy import removeSecurityProxy
-import zope.datetime
 
-# local imports
-from z3c.namedfile.utils import (
-    get_contenttype,
-    set_headers,
-    stream_data,
-)
+import time
+import zope.datetime
 
 
 @implementer(IPublishTraverse)

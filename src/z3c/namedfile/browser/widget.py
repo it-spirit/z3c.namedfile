@@ -1,63 +1,52 @@
 # -*- coding: utf-8 -*-
 
-# python imports
+from z3c.form.browser import file
+from z3c.form.interfaces import IDataConverter
+from z3c.form.interfaces import IDataManager
+from z3c.form.interfaces import IFieldWidget
+from z3c.form.interfaces import IFormLayer
+from z3c.form.interfaces import NOVALUE
+from z3c.form.widget import FieldWidget
+from z3c.namedfile.browser.interfaces import INamedFileWidget
+from z3c.namedfile.browser.interfaces import INamedImageWidget
+from z3c.namedfile.browser.scaling import ImageScale
+from z3c.namedfile.interfaces import INamed
+from z3c.namedfile.interfaces import INamedFileField
+from z3c.namedfile.interfaces import INamedImage
+from z3c.namedfile.interfaces import INamedImageField
+from z3c.namedfile.scale.scale import createScale
+from z3c.namedfile.scale.scale import getAvailableSizes
+from z3c.namedfile.scale.storage import AnnotationStorage
+from z3c.namedfile.utils import safe_basename
+from z3c.namedfile.utils import set_headers
+from z3c.namedfile.utils import stream_data
+from zope.component import adapter
+from zope.component import getMultiAdapter
+from zope.dublincore.interfaces import IZopeDublinCore
+from zope.interface import implementer
+from zope.interface import implementsOnly
+from zope.location.interfaces import ILocation
+from zope.publisher.browser import BrowserView
+from zope.publisher.browser import FileUpload
+from zope.publisher.interfaces import IPublishTraverse
+from zope.publisher.interfaces import NotFound
+from zope.security._proxy import _Proxy as Proxy
+from zope.security.proxy import removeSecurityProxy
+from zope.session.interfaces import ISession
+from zope.traversing.browser import absoluteURL
+
 import base64
 import datetime
 import hashlib
 import random
+import urllib
+
+
 try:
     from os import SEEK_END
 except ImportError:
     from posixfile import SEEK_END
-import urllib
 
-# zope imports
-from z3c.form.browser import file
-from z3c.form.interfaces import (
-    IDataConverter,
-    IDataManager,
-    IFieldWidget,
-    IFormLayer,
-    NOVALUE)
-from z3c.form.widget import FieldWidget
-from zope.component import (
-    adapter,
-    getMultiAdapter,
-)
-from zope.dublincore.interfaces import IZopeDublinCore
-from zope.interface import (
-    implementer,
-    implementsOnly,
-)
-from zope.location.interfaces import ILocation
-from zope.publisher.browser import (
-    BrowserView,
-    FileUpload,
-)
-from zope.publisher.interfaces import (
-    IPublishTraverse,
-    NotFound,
-)
-from zope.security.proxy import removeSecurityProxy
-from zope.security._proxy import _Proxy as Proxy
-from zope.session.interfaces import ISession
-from zope.traversing.browser import absoluteURL
-
-# local imports
-from z3c.namedfile.browser.interfaces import (
-    INamedFileWidget,
-    INamedImageWidget,
-)
-from z3c.namedfile.browser.scaling import ImageScale
-from z3c.namedfile.interfaces import (
-    INamed,
-    INamedFileField,
-    INamedImage,
-    INamedImageField,
-)
-from z3c.namedfile.scale.scale import createScale, getAvailableSizes
-from z3c.namedfile.scale.storage import AnnotationStorage
-from z3c.namedfile.utils import safe_basename, set_headers, stream_data
 
 SESSION_PKG_KEY = 'z3c.namedfile.widget'
 

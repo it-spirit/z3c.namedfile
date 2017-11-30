@@ -1,25 +1,19 @@
 # -*- coding: utf-8 -*-
 
-# zope imports
+from z3c.namedfile.interfaces import HAVE_BLOBS
+from z3c.namedfile.interfaces import INamedFile
+from z3c.namedfile.interfaces import INamedImage
+from z3c.namedfile.utils import get_contenttype
 from zope.app.file.file import File
 from zope.app.file.image import Image
 from zope.interface import implementer
 
-# local imports
-from z3c.namedfile.interfaces import (
-    HAVE_BLOBS,
-    INamedFile,
-    INamedImage,
-)
-from z3c.namedfile.utils import get_contenttype
 
 if HAVE_BLOBS:
     from z3c.blobfile.file import File as BlobFile
     from z3c.blobfile.image import Image as BlobImage
-    from z3c.namedfile.interfaces import (
-        INamedBlobFile,
-        INamedBlobImage,
-    )
+    from z3c.namedfile.interfaces import INamedBlobFile
+    from z3c.namedfile.interfaces import INamedBlobImage
 
 
 @implementer(INamedFile)

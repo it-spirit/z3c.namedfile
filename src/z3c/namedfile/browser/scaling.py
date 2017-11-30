@@ -1,31 +1,20 @@
 # -*- coding: utf-8 -*-
 """Image scaling."""
 
-# python imports
 from cgi import escape
-
-# zope imports
+from z3c.namedfile.scale.scale import createScale
+from z3c.namedfile.scale.scale import getAvailableSizes
+from z3c.namedfile.scale.storage import AnnotationStorage
+from z3c.namedfile.utils import set_headers
+from z3c.namedfile.utils import stream_data
 from zope.dublincore.interfaces import IZopeDublinCore
 from zope.interface import implementer
 from zope.publisher.browser import BrowserView
-from zope.publisher.interfaces import (
-    IPublishTraverse,
-    NotFound,
-)
+from zope.publisher.interfaces import IPublishTraverse
+from zope.publisher.interfaces import NotFound
 from zope.security.proxy import removeSecurityProxy
 from zope.traversing.browser import absoluteURL
 from zope.traversing.interfaces import ITraversable
-
-# local imports
-from z3c.namedfile.scale.storage import AnnotationStorage
-from z3c.namedfile.scale.scale import (
-    createScale,
-    getAvailableSizes,
-)
-from z3c.namedfile.utils import (
-    set_headers,
-    stream_data,
-)
 
 
 class ImageScale(BrowserView):

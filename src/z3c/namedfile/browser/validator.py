@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# zope imports
 from z3c.form import validator
-from zope.schema import ValidationError
-
-# local imports
 from z3c.namedfile.interfaces import INamedField
+from zope.schema import ValidationError
 
 
 class InvalidState(ValidationError):

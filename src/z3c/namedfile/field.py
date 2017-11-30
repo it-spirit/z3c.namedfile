@@ -1,29 +1,23 @@
 # -*- coding: utf-8 -*-
 
-# zope imports
+from z3c.namedfile.file import NamedFile as FileValueType
+from z3c.namedfile.file import NamedImage as ImageValueType
+from z3c.namedfile.interfaces import HAVE_BLOBS
+from z3c.namedfile.interfaces import INamedFile
+from z3c.namedfile.interfaces import INamedFileField
+from z3c.namedfile.interfaces import INamedImage
+from z3c.namedfile.interfaces import INamedImageField
 from zope.interface import implementer
 from zope.schema import Object
 
-# local imports
-from z3c.namedfile.file import NamedFile as FileValueType
-from z3c.namedfile.file import NamedImage as ImageValueType
-from z3c.namedfile.interfaces import (
-    HAVE_BLOBS,
-    INamedFile,
-    INamedFileField,
-    INamedImage,
-    INamedImageField,
-)
 
 if HAVE_BLOBS:
     from z3c.namedfile.file import NamedBlobFile as BlobFileValueType
     from z3c.namedfile.file import NamedBlobImage as BlobImageValueType
-    from z3c.namedfile.interfaces import (
-        INamedBlobFile,
-        INamedBlobFileField,
-        INamedBlobImage,
-        INamedBlobImageField,
-    )
+    from z3c.namedfile.interfaces import INamedBlobFile
+    from z3c.namedfile.interfaces import INamedBlobFileField
+    from z3c.namedfile.interfaces import INamedBlobImage
+    from z3c.namedfile.interfaces import INamedBlobImageField
 
 
 @implementer(INamedFileField)

@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 
-# python imports
+from z3c.namedfile.interfaces import INamedFile
+
 import datetime
 import mimetypes
 import os.path
 import time
 import urllib
-
 import zope.datetime
-
-# local imports
-from z3c.namedfile.interfaces import INamedFile
 
 
 def safe_basename(filename):

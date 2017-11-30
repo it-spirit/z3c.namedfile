@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
 
-# zope imports
 from z3c.form.converter import BaseDataConverter
+from z3c.namedfile.browser.interfaces import INamedFileWidget
+from z3c.namedfile.interfaces import INamed
+from z3c.namedfile.interfaces import INamedField
+from z3c.namedfile.utils import safe_basename
 from zope.component import adapter
 from zope.publisher.browser import FileUpload
-
-# local imports
-from z3c.namedfile.browser.interfaces import INamedFileWidget
-from z3c.namedfile.interfaces import (
-    INamed,
-    INamedField,
-)
-from z3c.namedfile.utils import safe_basename
 
 
 @adapter(INamedField, INamedFileWidget)

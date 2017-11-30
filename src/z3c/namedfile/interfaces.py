@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-# python imports
-import pkg_resources
-
-# zope imports
 from zope import schema
-from zope.app.file.interfaces import IFile, IImage
+from zope.app.file.interfaces import IFile
+from zope.app.file.interfaces import IImage
 from zope.interface import Interface
 from zope.schema.interfaces import IObject
+
+import pkg_resources
+
 
 try:
     pkg_resources.get_distribution('z3c.blobfile')

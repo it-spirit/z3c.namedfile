@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
 
-# zope imports
+from z3c.namedfile.browser.scaling import ImageScale
+from z3c.namedfile.scale.scale import createScale
+from z3c.namedfile.scale.scale import getAvailableSizes
+from z3c.namedfile.scale.storage import AnnotationStorage
 from zope.component.interfaces import ComponentLookupError
 from zope.dublincore.interfaces import IZopeDublinCore
-
-# local imports
-from z3c.namedfile.browser.scaling import ImageScale
-from z3c.namedfile.scale.scale import (
-    createScale,
-    getAvailableSizes,
-)
-from z3c.namedfile.scale.storage import AnnotationStorage
 
 
 def modified(context):
