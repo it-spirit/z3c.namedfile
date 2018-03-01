@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Utility functions."""
 
 from z3c.namedfile.interfaces import INamedFile
 
@@ -24,7 +25,6 @@ def safe_basename(filename):
 def get_contenttype(file=None, filename=None,
                     default='application/octet-stream'):
     """Get the MIME content type of the given file and/or filename."""
-
     file_type = getattr(file, 'contentType', None)
     if file_type is not None:
         return file_type
@@ -54,7 +54,7 @@ def set_headers(file, response, filename=None, modified=None):
     if modified is not None and isinstance(modified, datetime.datetime):
         # modified = modified.strftime("%a, %d %b %Y %H:%M:%S GMT")
         modified = zope.datetime.rfc1123_date(
-            long(time.mktime(modified.timetuple()))
+            long(time.mktime(modified.timetuple())),
         )
         response.setHeader('Last-Modified', modified)
 

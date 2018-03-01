@@ -84,7 +84,7 @@ def scalePILImage(image, width=None, height=None, direction='down'):  # noqa
 
     if direction == 'thumbnail' and not (width and height):
         raise ValueError(
-            'Thumbnailing requires both width and height to be specified.'
+            'Thumbnailing requires both width and height to be specified.',
         )
     elif width is None and height is None:
         raise ValueError('Either width or height need to be given.')

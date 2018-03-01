@@ -141,7 +141,8 @@ class AnnotationStorage(DictMixin):
             return
 
         logger.debug('Object: {0}, Scales: {1}'.format(
-            self.context.__name__, count
+            self.context.__name__,
+            count,
         ))
         modified_time = self.modified_time
         if modified_time is None:

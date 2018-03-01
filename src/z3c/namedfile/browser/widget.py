@@ -54,9 +54,9 @@ SESSION_PKG_KEY = 'z3c.namedfile.widget'
 def generate_token():
     return base64.b64encode(
         hashlib.sha256(
-            str(random.getrandbits(256)) + str(datetime.datetime.now())
+            str(random.getrandbits(256)) + str(datetime.datetime.now()),
         ).digest(),
-        random.choice(['rA', 'aZ', 'gQ', 'hH', 'hG', 'aR', 'DD'])
+        random.choice(['rA', 'aZ', 'gQ', 'hH', 'hG', 'aR', 'DD']),
     ).rstrip('==')
 
 
@@ -290,12 +290,12 @@ class Download(BrowserView):
     def __call__(self):
         if self.context.ignoreContext:
             raise NotFound(
-                'Cannot get the data file from a widget with no context.'
+                'Cannot get the data file from a widget with no context.',
             )
 
         context = self.context.context
         field = self.context.field
-        dm = getMultiAdapter((context, field,), IDataManager)
+        dm = getMultiAdapter((context, field), IDataManager)
         file_ = dm.query()
         if file_ is None:
             raise NotFound(self, self.filename, self.request)
@@ -324,7 +324,7 @@ class Scaling(BrowserView):
     def __call__(self):
         if self.context.ignoreContext:
             raise NotFound(
-                'Cannot get the data image from a widget with no context.'
+                'Cannot get the data image from a widget with no context.',
             )
 
         context = self.context.context
@@ -364,8 +364,9 @@ class Scaling(BrowserView):
 
         storage = AnnotationStorage(self.context.context, self.modified)
         info = storage.scale(
-            factory=createScale, fieldname=fieldname, **parameters
-        )
+            factory=createScale,
+            fieldname=fieldname,
+            **parameters)
 
         if info is not None:
             scale_view = ImageScale(self.context.context, self.request, **info)

@@ -142,8 +142,9 @@ class ImageScaling(BrowserView):
 
         storage = AnnotationStorage(self.context, self.modified)
         info = storage.scale(
-            factory=createScale, fieldname=fieldname, **parameters
-        )
+            factory=createScale,
+            fieldname=fieldname,
+            **parameters)
 
         if info is not None:
             scale_view = ImageScale(self.context, self.request, **info)
