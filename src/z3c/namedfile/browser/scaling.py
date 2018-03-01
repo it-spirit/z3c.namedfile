@@ -61,16 +61,16 @@ class ImageScale(BrowserView):
             'width': width,
         }
 
-        result = '<img src="{src}" alt="{alt}" title="{title}" ' \
+        result = u'<img src="{src}" alt="{alt}" title="{title}" ' \
                  'height="{height}" width="{width}"'.format(**values)
 
         if css_class is not None:
-            result = '{0} class="{1}"'.format(result, css_class)
+            result = u'{0} class="{1}"'.format(result, css_class)
 
         for key, value in kwargs.items():
-            result = '{0} {1}="{2}"'.format(result, key, value)
+            result = u'{0} {1}="{2}"'.format(result, key, value)
 
-        return '{0} />'.format(result)
+        return u'{0} />'.format(result)
 
     def index_html(self):
         """Download the image."""
