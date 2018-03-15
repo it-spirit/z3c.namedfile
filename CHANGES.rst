@@ -4,7 +4,8 @@ Changelog
 0.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fix unicode errors.
+- Fix check for form groups.
 
 
 0.3 (2017-11-29)
