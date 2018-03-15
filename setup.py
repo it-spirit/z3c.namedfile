@@ -5,7 +5,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 
-version = '0.4.dev0'
+version = '0.4'
 description = (
     'File types and fields for images, files and blob files with '
     'filenames.'
