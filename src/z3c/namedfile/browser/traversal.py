@@ -21,7 +21,7 @@ class WidgetTraversable(object):
     def traverse(self, name, remaining):
         form = self.context
         form.update()
-        if getattr(form, 'groups', None) is not None:
+        if getattr(form, 'groups', None):
             widget = self.find_widget(form, name)
         else:
             widget = form.widgets[name]
