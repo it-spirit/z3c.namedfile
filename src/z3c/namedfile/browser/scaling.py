@@ -149,3 +149,7 @@ class ImageScaling(BrowserView):
         if info is not None:
             scale_view = ImageScale(self.context, self.request, **info)
             return scale_view  # .__of__(self.context)
+
+    def __call__(self):
+        # avoid the need to prefix with nocall: in TAL
+        return
