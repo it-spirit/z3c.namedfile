@@ -1,8 +1,8 @@
 Changelog
 =========
 
-0.5 (unreleased)
-----------------
+0.4.1 (2018-04-27)
+------------------
 
 - ImageScaling view should not throw an error if called without anything.
 
