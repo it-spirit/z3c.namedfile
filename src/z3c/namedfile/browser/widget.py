@@ -20,6 +20,7 @@ from z3c.namedfile.scale.storage import AnnotationStorage
 from z3c.namedfile.utils import safe_basename
 from z3c.namedfile.utils import set_headers
 from z3c.namedfile.utils import stream_data
+from ZODB.POSException import POSKeyError
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.dublincore.interfaces import IZopeDublinCore
@@ -92,10 +93,13 @@ class NamedFileWidget(file.FileWidget):
 
     @property
     def file_size(self):
+        size = 0
         if INamed.providedBy(self.value):
-            return self.value.getSize() / 1024
-        else:
-            return 0
+            try:
+                size = self.value.getSize() / 1024
+            except POSKeyError:
+                size = 0
+        return size
 
     @property
     def filename_encoded(self):
