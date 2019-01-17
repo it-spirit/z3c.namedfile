@@ -4,7 +4,7 @@ Changelog
 0.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fix POSKeyError when calculating file size.
 
 
 0.4.1 (2018-04-27)
